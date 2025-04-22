@@ -185,95 +185,16 @@ const ErrorMessage = styled.div`
 `;
 
 // The rest of your component remains the same
-const Login = () => {
-  const [formData, setFormData] = useState({
-    employeeId: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.employeeId || !formData.password) {
-      setError("Please enter both Employee ID and Password.");
-      return;
-    }
-
-    try {
-      const res = await axios.post(securityBaseUrl + "login/", formData, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const { access_token } = res.data;
-
-      localStorage.setItem("access_token", access_token);
-
-      const user = validate(access_token);
-      console.log("User id:", user.id());
-      console.log("User name:", user.name());
-      console.log("User email:", user.email());
-      console.log("Allowed Modules:", user.allowedModules());
-      navigate("../");
-    } catch (err) {
-      console.error("Login error:", err.response?.data || err);
-      setError(err.response?.data?.message || "Invalid credentials");
-    }
-  };
-
+const Home = () => {
   return (
     <Container>
-      <FormWrapper>
-        <Title>Employee Login</Title>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <form onSubmit={handleSubmit}>
-          <InputGroup>
-            <Input 
-              type="text" 
-              name="employeeId" 
-              id="employeeId"
-              value={formData.employeeId}
-              onChange={handleChange} 
-              required 
-            />
-            <InputLabel 
-              htmlFor="employeeId" 
-              filled={formData.employeeId.length > 0}
-            >
-              Employee ID
-            </InputLabel>
-          </InputGroup>
-          
-          <InputGroup>
-            <Input
-              type="password"
-              name="password"
-              id="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <InputLabel 
-              htmlFor="password"
-              filled={formData.password.length > 0}
-            >
-              Password
-            </InputLabel>
-          </InputGroup>
-          
-          <Button type="submit">Sign In</Button>
-        </form>
-      </FormWrapper>
+        <Title>
+            Home Page <br/>
+            If not logged in - redirect to login page<br/>
+            If logged in - Show list of module the user has access to
+        </Title>
     </Container>
   );
 };
 
-export default Login;
+export default Home;
