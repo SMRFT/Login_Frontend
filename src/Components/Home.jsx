@@ -191,7 +191,7 @@ const Home = () => {
         <Title>
             Home Page <br/>
             If not logged in - redirect to login page<br/>
-            If logged in - Show list of module the user has access to
+            If logged in - Show list of modules user has access to
         </Title>
     </Container>
   );
