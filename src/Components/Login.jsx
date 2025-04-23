@@ -221,6 +221,8 @@ const Login = () => {
       console.log("User id:", user.id());
       console.log("User name:", user.name());
       console.log("User email:", user.email());
+      console.log("Allowed Pages:", user.allowedPages());
+      console.log("Allowed APIs:", user.allowedApis());
       console.log("Allowed Modules:", user.allowedModules());
       navigate("../");
     } catch (err) {
