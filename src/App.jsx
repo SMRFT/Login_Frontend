@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from 'styled-components';
 import Login from "./Components/Login";
-import Home from "./Components/Home";
+import Modules from "./Components/Modules";
 
 
 
@@ -32,10 +32,10 @@ function App() {
       <ContentWrapper>
       <Router>
       <Routes>
-        <Route path="login" element={<Login />} />
+        <Route path="/" element={<Login />} />
       </Routes>
       <Routes>
-        <Route path="" element={<Home />} />
+      <Route path="/Modules" element={<Modules />} />
       </Routes>
     </Router>
       </ContentWrapper>
