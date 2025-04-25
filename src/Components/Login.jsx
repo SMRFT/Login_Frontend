@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import {validate} from "jsauth";
+// import {validate} from "../jwt-check";
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
 
@@ -215,7 +216,7 @@ const Login = () => {
       console.log("Allowed Pages:", user.allowedPages());
       console.log("Allowed APIs:", user.allowedApis());
       console.log("Allowed Modules:", user.allowedModules());
-      navigate("/Modules");
+      navigate("/");
     } catch (err) {
       console.error("Login error:", err.response?.data || err);
       setError(err.response?.data?.message || "Invalid credentials");

@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Login from "./Components/Login";
 import Modules from "./Components/Modules";
-
+import PrivateRoute from './Components/PrivateRoute';
 
 
 const ContentWrapper = styled.div`
@@ -27,21 +27,19 @@ function App() {
 
 
   return (
-    <>
-   
-      <ContentWrapper>
-      <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-      </Routes>
-      <Routes>
-      <Route path="/Modules" element={<Modules />} />
-      </Routes>
-    </Router>
-      </ContentWrapper>
+        <Route path="/login" element={<Login />} />
 
-  </>
+        {/* Protected Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<Modules />} />
+         
+          {/* Add more protected routes here */}
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
