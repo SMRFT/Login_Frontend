@@ -33,9 +33,8 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Modules />} />
-         
-          {/* Add more protected routes here */}
+         <Route path="/" element={<Modules />} />
+             {/* Add more protected routes here */}
         </Route>
       </Routes>
     </BrowserRouter>

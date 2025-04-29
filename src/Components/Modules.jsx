@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-
+import { validate } from "jsauth";
+import { useNavigate } from 'react-router-dom'; // Import for navigation
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
 
 // Animations
@@ -186,7 +187,8 @@ const glassMorphism = `
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 `;
 
-const ModuleCard = styled.a`
+// Changed from 'a' tag to 'div'
+const ModuleCard = styled.div`
   position: relative;
   ${glassMorphism}
   border-radius: 16px;
@@ -356,13 +358,24 @@ const Modules = () => {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stars] = useState(() => generateStars(50));
+  const navigate = useNavigate(); // Hook for navigation
+
+  const token = localStorage.getItem("access_token");
+
+  const user = validate(token);
+  console.log("Allowed Modules:", user.allowedModules());
+  const allowedModules = user.allowedModules();
 
   useEffect(() => {
     setLoading(true);
     fetch(`${securityBaseUrl}get_modules/`)
       .then((res) => res.json())
       .then((data) => {
-        setModules(data.modules || []);
+        // Filter modules based on allowed module codes
+        const filteredModules = (data.modules || []).filter(module => 
+          allowedModules.includes(module.module_code)
+        );
+        setModules(filteredModules);
         setLoading(false);
       })
       .catch((err) => {
@@ -370,7 +383,18 @@ const Modules = () => {
         setLoading(false);
       });
   }, []);
-
+  
+  // Handle module click
+  const handleModuleClick = (moduleLink) => {
+    // If link is internal (starts with /)
+    if (moduleLink.startsWith('/')) {
+      navigate(moduleLink);
+    } else {
+      // For external links that need to be in the same tab
+      window.location.href = moduleLink;
+    }
+  };
+  
   // Generate mock descriptions if they're not provided
   const getDescription = (name) => {
     const descriptions = {
@@ -379,9 +403,13 @@ const Modules = () => {
       'Reports': 'Generate and view analytics reports and insights',
       'Dashboard': 'View key metrics and performance indicators',
       'Settings': 'Configure system-wide preferences and options',
+      'Shanmuga Diagnostics': 'Access and manage all diagnostic services and reports',
+      'SD Lab': 'Manage laboratory tests and results',
+      'SD Imaging': 'View and analyze diagnostic imaging studies',
+      'SD Reports': 'Generate comprehensive diagnostic reports',
     };
     
-    return descriptions[name] || `Access and manage all ${name.toLowerCase()} related functions`;
+    return descriptions[name] || `Access and manage ${name} diagnostic services`;
   };
 
   if (loading) {
@@ -408,7 +436,7 @@ const Modules = () => {
               <LoadingCircle key={i} index={i} />
             ))}
           </LoadingCircles>
-          <LoadingText>Loading modules...</LoadingText>
+          <LoadingText>Loading Shanmuga Diagnostics modules...</LoadingText>
         </LoadingAnimation>
       </Container>
     );
@@ -433,37 +461,40 @@ const Modules = () => {
       </Stars>
       <ContentWrapper>
         <HeaderSection>
-          <Title>Shanmuga Innovations</Title>
-          <Subtitle>
-            Access our suite of enterprise modules to manage and optimize your business operations
-          </Subtitle>
+          <Title>Welcome To Shanmuga Hospital</Title>
         </HeaderSection>
         
         <ModulesWrapper>
-          {modules.map((module, index) => (
-            <ModuleCard
-              key={module.module_code}
-              href={module.module_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              gradient={gradients[index % gradients.length]}
-              index={index}
-            >
-              <ModuleIcon gradient={gradients[index % gradients.length]}>
-                {moduleIcons[index % moduleIcons.length]}
-              </ModuleIcon>
-              <ModuleName>{module.module_name}</ModuleName>
-              <ModuleDescription>
-                {module.description || getDescription(module.module_name)}
-              </ModuleDescription>
-              <ActionSection>
-                <LaunchButton gradient={gradients[index % gradients.length]}>
-                  Launch <Arrow>→</Arrow>
-                </LaunchButton>
-                <Badge>v{module.version || '1.0'}</Badge>
-              </ActionSection>
-            </ModuleCard>
-          ))}
+          {modules.length > 0 ? (
+            modules.map((module, index) => (
+              <ModuleCard
+                key={module.module_code}
+                gradient={gradients[index % gradients.length]}
+                index={index}
+                onClick={() => handleModuleClick(module.module_link)}
+              >
+                <ModuleIcon gradient={gradients[index % gradients.length]}>
+                  {moduleIcons[index % moduleIcons.length]}
+                </ModuleIcon>
+                <ModuleName>{module.module_name}</ModuleName>
+                <ModuleDescription>
+                  {module.description || getDescription(module.module_name)}
+                </ModuleDescription>
+                <ActionSection>
+                  <LaunchButton gradient={gradients[index % gradients.length]}>
+                    Launch <Arrow>→</Arrow>
+                  </LaunchButton>
+                  <Badge>v{module.version || '1.0'}</Badge>
+                </ActionSection>
+              </ModuleCard>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', width: '100%', padding: '2rem' }}>
+              <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '1.1rem' }}>
+                No Shanmuga Diagnostics modules available for your account.
+              </p>
+            </div>
+          )}
         </ModulesWrapper>
       </ContentWrapper>
     </Container>

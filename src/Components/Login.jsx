@@ -209,6 +209,11 @@ const Login = () => {
 
       localStorage.setItem("access_token", access_token);
 
+      // document.cookie = `access_token=${access_token}; path=/; domain=.localhost; secure; SameSite=Lax`;
+      // For local development (HTTP, no secure)
+      document.cookie = `access_token=${access_token}; path=/; domain=.localhost; SameSite=Lax`;
+
+
       const user = validate(access_token);
       console.log("User id:", user.id());
       console.log("User name:", user.name());
