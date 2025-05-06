@@ -6,7 +6,9 @@ import {validate} from "jsauth";
 // import {validate} from "../jwt-check";
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
+console.log("hj", securityBaseUrl);
 
+console.log("hj",securityBaseUrl)
 // Updated Container with a subtle gradient background
 const Container = styled.div`
   display: flex;
@@ -191,7 +193,7 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -209,19 +211,12 @@ const Login = () => {
 
       localStorage.setItem("access_token", access_token);
 
-      // document.cookie = `access_token=${access_token}; path=/; domain=.localhost; secure; SameSite=Lax`;
-      // For local development (HTTP, no secure)
-      document.cookie = `access_token=${access_token}; path=/; domain=.localhost; SameSite=Lax`;
+     
 
-
-      const user = validate(access_token);
-      console.log("User id:", user.id());
-      console.log("User name:", user.name());
-      console.log("User email:", user.email());
-      console.log("Allowed Pages:", user.allowedPages());
-      console.log("Allowed APIs:", user.allowedApis());
-      console.log("Allowed Modules:", user.allowedModules());
-      navigate("/");
+      
+     
+    
+      navigate(`${import.meta.env.BASE_URL}`);
     } catch (err) {
       console.error("Login error:", err.response?.data || err);
       setError(err.response?.data?.message || "Invalid credentials");

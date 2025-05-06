@@ -9,7 +9,7 @@ const isAuthenticated = () => {
 
 // PrivateRoute component
 const PrivateRoute = () => {
-  return isAuthenticated() ? <Outlet /> : <Navigate to="/Login" />;
+  return isAuthenticated() ? <Outlet /> : <Navigate to={`${import.meta.env.BASE_URL}login`} />;
 };
 
 export default PrivateRoute;

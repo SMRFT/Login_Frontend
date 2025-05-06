@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "dev:development": "vite --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^1.8.4",
-    "jsauth": "github:ashokkumarta/jsauth#v1.0.0",
+    "jsauth": "git+https://github.com/ashokkumarta/jsauth.git#v1.0.0",
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -358,15 +358,39 @@ const Modules = () => {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stars] = useState(() => generateStars(50));
+  const [branchCodes, setBranchCodes] = useState([]);
+  const [selectedModuleLink, setSelectedModuleLink] = useState(null);
+  const [error, setError] = useState('');
+
+  
   const navigate = useNavigate(); // Hook for navigation
 
-  const token = localStorage.getItem("access_token");
-
-  const user = validate(token);
-  console.log("Allowed Modules:", user.allowedModules());
-  const allowedModules = user.allowedModules();
-
+  // Check authentication at component mount
   useEffect(() => {
+    
+    const token = localStorage.getItem("access_token");
+
+       
+    var user;
+    try {     
+      user = validate(token)
+
+      const allowedData = user.allowedData(); // Assuming this method exists
+      console.log(allowedData,"allowedData")
+      setBranchCodes(allowedData);
+
+    }
+    catch(err) {
+      // console.log("chandra")
+      localStorage.removeItem("access_token");
+      navigate(`${import.meta.env.BASE_URL}Login`);
+      return;
+    }
+   
+    
+    // Token is valid, proceed with fetching modules
+    const allowedModules = user.allowedModules();
+    
     setLoading(true);
     fetch(`${securityBaseUrl}get_modules/`)
       .then((res) => res.json())
@@ -375,6 +399,15 @@ const Modules = () => {
         const filteredModules = (data.modules || []).filter(module => 
           allowedModules.includes(module.module_code)
         );
+        
+        // Check if user has access to only one module
+        if (filteredModules.length === 1) {
+          const singleModule = filteredModules[0];
+          // Redirect to that module
+          handleModuleRedirect(singleModule.module_link);
+          return;
+        }
+        
         setModules(filteredModules);
         setLoading(false);
       })
@@ -382,10 +415,30 @@ const Modules = () => {
         console.error('Fetch error:', err);
         setLoading(false);
       });
-  }, []);
+  }, [navigate]);
   
   // Handle module click
   const handleModuleClick = (moduleLink) => {
+    setError('');
+  
+    if (!branchCodes || branchCodes.length === 0) {
+      setError('No branch codes found. Please contact admin.');
+      return;
+    }
+  
+    if (branchCodes.length === 1) {
+      localStorage.setItem('selected_branch', branchCodes[0]);
+      // Only one branch, navigate directly
+      handleModuleRedirect(`${moduleLink}`);
+    } else {
+      // Multiple branches, store moduleLink and wait for dropdown selection
+      setSelectedModuleLink(moduleLink);
+    }
+  };
+  
+  
+  // Handle module redirection
+  const handleModuleRedirect = (moduleLink) => {
     // If link is internal (starts with /)
     if (moduleLink.startsWith('/')) {
       navigate(moduleLink);
@@ -463,39 +516,75 @@ const Modules = () => {
         <HeaderSection>
           <Title>Welcome To Shanmuga Hospital</Title>
         </HeaderSection>
-        
-        <ModulesWrapper>
-          {modules.length > 0 ? (
-            modules.map((module, index) => (
-              <ModuleCard
-                key={module.module_code}
-                gradient={gradients[index % gradients.length]}
-                index={index}
-                onClick={() => handleModuleClick(module.module_link)}
-              >
-                <ModuleIcon gradient={gradients[index % gradients.length]}>
-                  {moduleIcons[index % moduleIcons.length]}
-                </ModuleIcon>
-                <ModuleName>{module.module_name}</ModuleName>
-                <ModuleDescription>
-                  {module.description || getDescription(module.module_name)}
-                </ModuleDescription>
-                <ActionSection>
-                  <LaunchButton gradient={gradients[index % gradients.length]}>
-                    Launch <Arrow>→</Arrow>
-                  </LaunchButton>
-                  <Badge>v{module.version || '1.0'}</Badge>
-                </ActionSection>
-              </ModuleCard>
-            ))
-          ) : (
-            <div style={{ textAlign: 'center', width: '100%', padding: '2rem' }}>
-              <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '1.1rem' }}>
-                No Shanmuga Diagnostics modules available for your account.
-              </p>
-            </div>
-          )}
-        </ModulesWrapper>
+        {error && (
+  <div style={{ color: 'red', textAlign: 'center', marginBottom: '1rem' }}>
+    {error}
+  </div>
+)}
+
+{!selectedModuleLink && (
+  <ModulesWrapper>
+    {modules.length > 0 ? (
+      modules.map((module, index) => (
+        <ModuleCard
+          key={module.module_code}
+          gradient={gradients[index % gradients.length]}
+          index={index}
+          onClick={() => handleModuleClick(module.module_link)}
+        >
+          <ModuleIcon gradient={gradients[index % gradients.length]}>
+            {moduleIcons[index % moduleIcons.length]}
+          </ModuleIcon>
+          <ModuleName>{module.module_name}</ModuleName>
+          <ModuleDescription>
+            {module.description || getDescription(module.module_name)}
+          </ModuleDescription>
+          <ActionSection>
+            <LaunchButton gradient={gradients[index % gradients.length]}>
+              Launch <Arrow>→</Arrow>
+            </LaunchButton>
+            <Badge>v{module.version || '1.0'}</Badge>
+          </ActionSection>
+        </ModuleCard>
+      ))
+    ) : (
+      <div style={{ textAlign: 'center', width: '100%', padding: '2rem' }}>
+        <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '1.1rem' }}>
+          No Shanmuga Diagnostics modules available for your account.
+        </p>
+      </div>
+    )}
+  </ModulesWrapper>
+)}
+
+        {selectedModuleLink && branchCodes.length > 1 && (
+  <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+    <p style={{ color: '#fff', marginBottom: '0.5rem' }}>Select a branch to proceed:</p>
+    <select
+      onChange={(e) => {
+        const selected = e.target.value;
+        console.log("selected",selected)
+        if (selected) {
+          localStorage.setItem("selected_branch", selected); 
+          handleModuleRedirect(`${selectedModuleLink}`);
+        }
+      }}
+      style={{
+        padding: '0.5rem',
+        fontSize: '1rem',
+        borderRadius: '5px',
+        border: 'none',
+        outline: 'none'
+      }}
+    >
+      <option value="">-- Select Branch --</option>
+      {branchCodes.map((code) => (
+        <option key={code} value={code}>{code}</option>
+      ))}
+    </select>
+  </div>
+)}
+
       </ContentWrapper>
     </Container>
   );

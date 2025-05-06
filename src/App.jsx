@@ -4,11 +4,9 @@ import Login from "./Components/Login";
 import Modules from "./Components/Modules";
 import PrivateRoute from './Components/PrivateRoute';
 
-
 const ContentWrapper = styled.div`
   margin-top: 15px;
   padding: 20px;
-
 
   @media (max-width: 1024px) {
     margin-left: 200px;
@@ -24,21 +22,20 @@ const ContentWrapper = styled.div`
 `;
 
 function App() {
-
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        {/* Public Route */}
+        <Route path={`${import.meta.env.BASE_URL}login`} element={<Login />} />
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-         <Route path="/" element={<Modules />} />
-             {/* Add more protected routes here */}
+          <Route path={`${import.meta.env.BASE_URL}`} element={<Modules />} />
+          {/* Add more protected routes here */}
         </Route>
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
