@@ -362,7 +362,8 @@ const Modules = () => {
   const [selectedModuleLink, setSelectedModuleLink] = useState(null);
   const [error, setError] = useState('');
 
-  
+  const [entitlements, setEntitlements] = useState([]);
+
   const navigate = useNavigate(); // Hook for navigation
 
   // Check authentication at component mount
@@ -435,6 +436,20 @@ const Modules = () => {
       setSelectedModuleLink(moduleLink);
     }
   };
+  
+  useEffect(() => {
+    if (branchCodes.length > 0) {
+      const codesParam = branchCodes.join(',');
+      fetch(`${securityBaseUrl}get_data_entitlements?branchCodes=${codesParam}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log('Branch Names:', data.dataEntitlements);
+          setEntitlements(data.dataEntitlements || []);
+        })
+        .catch(err => console.error('Entitlements fetch error:', err));
+    }
+  }, [branchCodes]);
+  
   
   
   // Handle module redirection
@@ -557,13 +572,12 @@ const Modules = () => {
   </ModulesWrapper>
 )}
 
-        {selectedModuleLink && branchCodes.length > 1 && (
+ {selectedModuleLink && branchCodes.length > 1 && (
   <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
     <p style={{ color: '#fff', marginBottom: '0.5rem' }}>Select a branch to proceed:</p>
     <select
       onChange={(e) => {
         const selected = e.target.value;
-        console.log("selected",selected)
         if (selected) {
           localStorage.setItem("selected_branch", selected); 
           handleModuleRedirect(`${selectedModuleLink}`);
@@ -578,12 +592,16 @@ const Modules = () => {
       }}
     >
       <option value="">-- Select Branch --</option>
-      {branchCodes.map((code) => (
-        <option key={code} value={code}>{code}</option>
-      ))}
+      {entitlements.map(({ DataEntitlementsCode, DataEntitlements }) => (
+  <option key={DataEntitlementsCode} value={DataEntitlementsCode}>
+    {DataEntitlements || DataEntitlementsCode}
+  </option>
+))}
+
     </select>
   </div>
 )}
+
 
       </ContentWrapper>
     </Container>
