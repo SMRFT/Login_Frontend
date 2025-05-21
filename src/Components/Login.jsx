@@ -7,8 +7,6 @@ import {validate} from "jsauth";
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
 console.log("hj", securityBaseUrl);
-
-console.log("hj",securityBaseUrl)
 // Updated Container with a subtle gradient background
 const Container = styled.div`
   display: flex;
@@ -210,12 +208,6 @@ const Login = () => {
       const { access_token } = res.data;
 
       localStorage.setItem("access_token", access_token);
-
-     
-
-      
-     
-    
       navigate(`${import.meta.env.BASE_URL}`);
     } catch (err) {
       console.error("Login error:", err.response?.data || err);

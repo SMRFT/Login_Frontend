@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Login from "./Components/Login";
 import Modules from "./Components/Modules";
+import Landing from "./Components/Landing";
 import PrivateRoute from './Components/PrivateRoute';
 
 const ContentWrapper = styled.div`
@@ -30,7 +31,13 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path={`${import.meta.env.BASE_URL}`} element={<Modules />} />
+          <Route path={`${import.meta.env.BASE_URL}`} element={<Landing />} />
+          {/* Add more protected routes here */}
+        </Route>
+        
+        {/* Protected Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path={`${import.meta.env.BASE_URL}secure`} element={<Modules />} />
           {/* Add more protected routes here */}
         </Route>
       </Routes>
