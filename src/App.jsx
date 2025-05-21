@@ -1,14 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Login from "./Components/Login";
-import Home from "./Components/Home";
-
-
+import Modules from "./Components/Modules";
+import Landing from "./Components/Landing";
+import PrivateRoute from './Components/PrivateRoute';
 
 const ContentWrapper = styled.div`
   margin-top: 15px;
   padding: 20px;
-
 
   @media (max-width: 1024px) {
     margin-left: 200px;
@@ -24,23 +23,25 @@ const ContentWrapper = styled.div`
 `;
 
 function App() {
-
-
   return (
-    <>
-   
-      <ContentWrapper>
-      <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="login" element={<Login />} />
-      </Routes>
-      <Routes>
-        <Route path="" element={<Home />} />
-      </Routes>
-    </Router>
-      </ContentWrapper>
+        {/* Public Route */}
+        <Route path={`${import.meta.env.BASE_URL}login`} element={<Login />} />
 
-  </>
+        {/* Protected Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path={`${import.meta.env.BASE_URL}`} element={<Landing />} />
+          {/* Add more protected routes here */}
+        </Route>
+        
+        {/* Protected Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route path={`${import.meta.env.BASE_URL}secure`} element={<Modules />} />
+          {/* Add more protected routes here */}
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

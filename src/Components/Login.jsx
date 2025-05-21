@@ -3,111 +3,105 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import {validate} from "jsauth";
+// import {validate} from "../jwt-check";
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
-
+console.log("hj", securityBaseUrl);
 // Updated Container with a subtle gradient background
 const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f0f2f5 0%, #d9e4f5 100%);
 `;
 
-// Modern glass-effect form wrapper
 const FormWrapper = styled.div`
   background: rgba(255, 255, 255, 0.95);
-  padding: 3rem;
-  border-radius: 20px;
-  width: 450px;
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  width: 440px;
+  max-width: 95%;
   text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(5px);
-  
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
   }
 `;
 
-// More modern title with custom underline effect
 const Title = styled.h2`
-  margin-bottom: 2.5rem;
-  color: #333;
+  margin-bottom: 2.2rem;
+  color: #2e2e2e;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 2.1rem;
   position: relative;
-  
+
   &:after {
     content: '';
     position: absolute;
     bottom: -12px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
+    width: 70px;
     height: 4px;
-    background: linear-gradient(90deg, #6b5b95, #dd2476);
-    border-radius: 4px;
+    background: linear-gradient(90deg, #845ec2, #d65db1);
+    border-radius: 3px;
   }
 `;
 
-// Enhanced input group with better spacing
 const InputGroup = styled.div`
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 2.1rem;
 `;
 
-// Enhanced input label with better transition
 const InputLabel = styled.label`
   position: absolute;
-  left: 15px;
-  top: ${props => props.filled ? '-10px' : '12px'};
+  left: 18px;
+  top: ${props => props.filled ? '-10px' : '13px'};
   font-size: ${props => props.filled ? '12px' : '16px'};
-  color: ${props => props.filled ? '#6b5b95' : '#aaa'};
-  background: ${props => props.filled ? 'white' : 'transparent'};
+  color: ${props => props.filled ? '#845ec2' : '#aaa'};
+  background: white;
   padding: 0 5px;
   transition: all 0.3s ease;
   pointer-events: none;
   font-weight: 500;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
 `;
 
-// Modern input fields with subtle transitions
 const Input = styled.input`
   width: 100%;
-  padding: 16px;
-  border: 2px solid #eaeaea;
-  border-radius: 12px;
-  font-size: 16px;
-  transition: all 0.3s;
-  background-color: #f9f9f9;
-  color: #333;
-  
+  padding: 15px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 14px;
+  font-size: 15px;
+  background-color: #fdfdfd;
+  transition: all 0.3s ease-in-out;
+
   &:focus {
-    border-color: #6b5b95;
-    box-shadow: 0 0 0 4px rgba(107, 91, 149, 0.1);
+    border-color: #845ec2;
+    box-shadow: 0 0 0 4px rgba(132, 94, 194, 0.1);
     outline: none;
-    background-color: #ffffff;
+    background-color: #fff;
   }
-  
+
   &:focus + ${InputLabel} {
     top: -10px;
     font-size: 12px;
-    color: #6b5b95;
-    background: white;
+    color: #845ec2;
     font-weight: 600;
   }
 `;
 
-// Enhanced button with hover and active states
 const Button = styled.button`
   width: 100%;
-  padding: 16px;
-  margin-top: 1.5rem;
-  background: linear-gradient(90deg, #6b5b95, #a15ea3);
+  padding: 14px;
+  margin-top: 1.2rem;
+  background: linear-gradient(90deg, #845ec2, #d65db1);
   color: white;
   border: none;
   border-radius: 12px;
@@ -115,67 +109,64 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(107, 91, 149, 0.3);
   position: relative;
-  overflow: hidden;
-  
+  box-shadow: 0 4px 16px rgba(132, 94, 194, 0.25);
+
   &:hover {
-    background: linear-gradient(90deg, #6b5b95, #dd2476);
-    box-shadow: 0 6px 22px rgba(221, 36, 118, 0.35);
+    background: linear-gradient(90deg, #845ec2, #ff6f91);
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 111, 145, 0.3);
   }
-  
+
   &:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(107, 91, 149, 0.2);
+    transform: scale(0.98);
   }
-  
+
   &:after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: -40%;
+    left: -40%;
+    width: 180%;
+    height: 180%;
     background: linear-gradient(
       rgba(255, 255, 255, 0.2),
       rgba(255, 255, 255, 0)
     );
-    transform: rotate(30deg);
-    transition: transform 0.6s;
+    transform: rotate(25deg);
     opacity: 0;
+    transition: all 0.5s ease-in-out;
   }
-  
+
   &:hover:after {
     opacity: 1;
-    transform: rotate(30deg) translateY(-20%);
+    transform: rotate(25deg) translateY(-15%);
   }
 `;
 
-// Improved error message with icon
 const ErrorMessage = styled.div`
   color: #e74c3c;
   font-size: 14px;
-  margin-bottom: 1.5rem;
-  background: rgba(231, 76, 60, 0.08);
-  padding: 12px 16px;
+  margin-bottom: 1.8rem;
+  background: rgba(231, 76, 60, 0.1);
+  padding: 12px 18px;
   border-radius: 10px;
-  border-left: 4px solid #e74c3c;
+  border-left: 5px solid #e74c3c;
   text-align: left;
   display: flex;
   align-items: center;
-  animation: fadeInUp 0.4s;
-  
+  animation: fadeInUp 0.4s ease;
+
   &:before {
     content: "⚠️";
     margin-right: 10px;
     font-size: 16px;
   }
-  
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(12px);
     }
     to {
       opacity: 1;
@@ -183,6 +174,7 @@ const ErrorMessage = styled.div`
     }
   }
 `;
+
 
 // The rest of your component remains the same
 const Login = () => {
@@ -199,7 +191,7 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -216,15 +208,7 @@ const Login = () => {
       const { access_token } = res.data;
 
       localStorage.setItem("access_token", access_token);
-
-      const user = validate(access_token);
-      console.log("User id:", user.id());
-      console.log("User name:", user.name());
-      console.log("User email:", user.email());
-      console.log("Allowed Pages:", user.allowedPages());
-      console.log("Allowed APIs:", user.allowedApis());
-      console.log("Allowed Modules:", user.allowedModules());
-      navigate("../");
+      navigate(`${import.meta.env.BASE_URL}`);
     } catch (err) {
       console.error("Login error:", err.response?.data || err);
       setError(err.response?.data?.message || "Invalid credentials");
