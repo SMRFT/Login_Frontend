@@ -48,14 +48,14 @@ const orb3Move = keyframes`
 
 // Project Data
 const projects = [
-  { name: "HMS", url: "https://hms.shinova.in/", note: "Hospital Management System..." },
-  { name: "Diagnostics", url: "https://lab.shinova.in/", note: "Complete diagnostic solution..." },
-  { name: "Cosmetology", url: "https://salemcosmeticclinic.netlify.app/", note: "Advanced cosmetology platform..." },
-  { name: "Indicator", url: "https://indicators.shinova.in/", note: "Quality indicator reporting system..." },
-  { name: "Tracker", url: "https://tracker.shinova.in/", note: "System to track performance..." },
-  { name: "Insurance", url: "https://insurance.shinova.in/", note: "Insurance management solution..." },
-  { name: "Milestone", url: "https://milestone.shinova.in/", note: "Childhood disorder tracking tool..." },
-  { name: "JSW", url: "https://jsw.shinova.in/", note: "Tailored solutions for JSW..." }
+  { name: "Diagnostics", url: "/Diagnostics", note: "Complete diagnostic solution..." },
+  // { name: "Cosmetology", url: "https://salemcosmeticclinic.netlify.app/", note: "Advanced cosmetology platform..." },
+  { name: "Indicator", url: "/indicators", note: "Quality indicator reporting system..." },
+  { name: "Tracker", url: "/tracker", note: "System to track performance..." },
+  { name: "Insurance", url: "/insurance", note: "Insurance management solution..." },
+  { name: "Milestone", url: "/milestone", note: "Childhood disorder tracking tool..." },
+  { name: "Login", url: "/login", note: "Login management system..." },
+  { name: "Global", url: "/global", note: "Global management system..." },
 ];
 
 const glowColors = ["#FB2576", "#7A0BC0", "#17A2B8", "#C70D3A", "#FF8A08", "#A7D129", "#FAEF5D", "#28A745"];

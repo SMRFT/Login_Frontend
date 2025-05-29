@@ -30,7 +30,7 @@ function App() {
         <Route path={`${import.meta.env.BASE_URL}login`} element={<Login />} />
 
         {/* Protected Routes */}
-        <Route element={<PrivateRoute />}>
+        <Route >
           <Route path={`${import.meta.env.BASE_URL}`} element={<Landing />} />
           {/* Add more protected routes here */}
         </Route>
