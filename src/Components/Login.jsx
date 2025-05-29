@@ -208,7 +208,7 @@ const Login = () => {
       const { access_token } = res.data;
 
       localStorage.setItem("access_token", access_token);
-      navigate(`${import.meta.env.BASE_URL}`);
+      navigate(`${import.meta.env.BASE_URL}secure`);
     } catch (err) {
       console.error("Login error:", err.response?.data || err);
       setError(err.response?.data?.message || "Invalid credentials");
