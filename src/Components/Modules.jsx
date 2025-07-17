@@ -1,58 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { validate } from "jsauth";
-import { useNavigate } from 'react-router-dom'; // Import for navigation
-const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
+"use client"
+
+import { useEffect, useState } from "react"
+import styled, { keyframes } from "styled-components"
+import { validate } from "jsauth"
+import { useNavigate } from "react-router-dom"
+
+const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL
 
 // Animations
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
-`;
+`
 
 const pulse = keyframes`
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
-`;
+`
 
 const float = keyframes`
   0% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
   100% { transform: translateY(0px); }
-`;
+`
 
 const gradientMove = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-`;
-
-const bgAnimation = keyframes`
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(10px, -10px); }
-  50% { transform: translate(0, 0); }
-  75% { transform: translate(-10px, 10px); }
-  100% { transform: translate(0, 0); }
-`;
+`
 
 const orb1Move = keyframes`
   0% { transform: translate(0, 0); opacity: 0.5; }
   50% { transform: translate(-30px, 30px); opacity: 0.7; }
   100% { transform: translate(0, 0); opacity: 0.5; }
-`;
+`
 
 const orb2Move = keyframes`
   0% { transform: translate(0, 0); opacity: 0.4; }
   50% { transform: translate(40px, -40px); opacity: 0.6; }
   100% { transform: translate(0, 0); opacity: 0.4; }
-`;
+`
 
 const orb3Move = keyframes`
   0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
   50% { transform: translate(-50px, -20px) rotate(180deg); opacity: 0.5; }
   100% { transform: translate(0, 0) rotate(360deg); opacity: 0.3; }
-`;
+`
 
 // Styled components
 const Container = styled.div`
@@ -69,7 +64,7 @@ const Container = styled.div`
   font-family: 'Inter', sans-serif;
   position: relative;
   overflow: hidden;
-`;
+`
 
 const BackgroundOrb = styled.div`
   position: absolute;
@@ -77,7 +72,7 @@ const BackgroundOrb = styled.div`
   filter: blur(80px);
   z-index: 0;
   pointer-events: none;
-`;
+`
 
 const Orb1 = styled(BackgroundOrb)`
   width: 300px;
@@ -86,7 +81,7 @@ const Orb1 = styled(BackgroundOrb)`
   top: -50px;
   right: -50px;
   animation: ${orb1Move} 10s ease-in-out infinite;
-`;
+`
 
 const Orb2 = styled(BackgroundOrb)`
   width: 400px;
@@ -95,7 +90,7 @@ const Orb2 = styled(BackgroundOrb)`
   bottom: -100px;
   left: -100px;
   animation: ${orb2Move} 15s ease-in-out infinite;
-`;
+`
 
 const Orb3 = styled(BackgroundOrb)`
   width: 250px;
@@ -104,7 +99,7 @@ const Orb3 = styled(BackgroundOrb)`
   top: 40%;
   right: 10%;
   animation: ${orb3Move} 12s ease-in-out infinite;
-`;
+`
 
 const ContentWrapper = styled.div`
   position: relative;
@@ -113,7 +108,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`
 
 const Stars = styled.div`
   position: absolute;
@@ -123,19 +118,19 @@ const Stars = styled.div`
   height: 100%;
   z-index: 0;
   pointer-events: none;
-`;
+`
 
 const Star = styled.div`
   position: absolute;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
+  width: ${(props) => props.size}px;
+  height: ${(props) => props.size}px;
   background: white;
   border-radius: 50%;
-  opacity: ${props => props.opacity};
-  top: ${props => props.top}%;
-  left: ${props => props.left}%;
-  animation: ${pulse} ${props => props.duration}s ease-in-out infinite;
-`;
+  opacity: ${(props) => props.opacity};
+  top: ${(props) => props.top}%;
+  left: ${(props) => props.left}%;
+  animation: ${pulse} ${(props) => props.duration}s ease-in-out infinite;
+`
 
 const HeaderSection = styled.div`
   display: flex;
@@ -145,7 +140,7 @@ const HeaderSection = styled.div`
   animation: ${fadeIn} 1s ease-out;
   position: relative;
   z-index: 2;
-`;
+`
 
 const Title = styled.h1`
   font-size: 3.5rem;
@@ -160,15 +155,7 @@ const Title = styled.h1`
   color: transparent;
   letter-spacing: -1px;
   text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-`;
-
-const Subtitle = styled.p`
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 600px;
-  text-align: center;
-  line-height: 1.6;
-`;
+`
 
 const ModulesWrapper = styled.div`
   display: grid;
@@ -178,16 +165,15 @@ const ModulesWrapper = styled.div`
   max-width: 1200px;
   position: relative;
   z-index: 2;
-`;
+`
 
 const glassMorphism = `
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-`;
+`
 
-// Changed from 'a' tag to 'div'
 const ModuleCard = styled.div`
   position: relative;
   ${glassMorphism}
@@ -221,7 +207,7 @@ const ModuleCard = styled.div`
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
-`;
+`
 
 const ModuleIcon = styled.div`
   width: 50px;
@@ -236,27 +222,27 @@ const ModuleIcon = styled.div`
   margin-bottom: 1rem;
   font-size: 1.5rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-`;
+`
 
 const ModuleName = styled.h3`
   font-size: 1.3rem;
   font-weight: 600;
   color: white;
   margin-bottom: 0.5rem;
-`;
+`
 
 const ModuleDescription = styled.p`
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
   flex-grow: 1;
-`;
+`
 
 const ActionSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 1rem;
-`;
+`
 
 const LaunchButton = styled.span`
   display: flex;
@@ -264,20 +250,18 @@ const LaunchButton = styled.span`
   font-size: 0.9rem;
   font-weight: 500;
   color: ${({ gradient }) => {
-    // Extract main color from gradient
-    const matches = gradient.match(/#[a-f0-9]{6}|#[a-f0-9]{3}/gi);
-    return matches ? matches[0] : '#4ecdc4';
+    const matches = gradient.match(/#[a-f0-9]{6}|#[a-f0-9]{3}/gi)
+    return matches ? matches[0] : "#4ecdc4"
   }};
-`;
+`
 
 const Arrow = styled.span`
   margin-left: 0.5rem;
   transition: transform 0.3s ease;
-  
   ${ModuleCard}:hover & {
     transform: translateX(5px);
   }
-`;
+`
 
 const Badge = styled.span`
   background: rgba(255, 255, 255, 0.15);
@@ -285,7 +269,7 @@ const Badge = styled.span`
   border-radius: 12px;
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.8);
-`;
+`
 
 const LoadingAnimation = styled.div`
   display: flex;
@@ -294,53 +278,53 @@ const LoadingAnimation = styled.div`
   margin: 4rem 0;
   position: relative;
   z-index: 2;
-`;
+`
 
 const LoadingCircle = styled.div`
   width: 12px;
   height: 12px;
   background-color: ${({ index }) => {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#6a67ce'];
-    return colors[index % colors.length];
+    const colors = ["#ff6b6b", "#4ecdc4", "#45b7d1", "#6a67ce"]
+    return colors[index % colors.length]
   }};
   border-radius: 50%;
   margin: 0 5px;
   animation: ${float} 1s ease-in-out infinite;
   animation-delay: ${({ index }) => `${index * 0.2}s`};
   box-shadow: 0 0 10px ${({ index }) => {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#6a67ce'];
-    return colors[index % colors.length];
+    const colors = ["#ff6b6b", "#4ecdc4", "#45b7d1", "#6a67ce"]
+    return colors[index % colors.length]
   }};
-`;
+`
 
 const LoadingCircles = styled.div`
   display: flex;
   margin-bottom: 1rem;
-`;
+`
 
 const LoadingText = styled.p`
   color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
-`;
+`
 
 // Module gradients
 const gradients = [
-  'linear-gradient(135deg, #ff6b6b, #ff8e8e)',
-  'linear-gradient(135deg, #4ecdc4, #2cbfc7)',
-  'linear-gradient(135deg, #45b7d1, #2a93bc)',
-  'linear-gradient(135deg, #6a67ce, #9183ff)',
-  'linear-gradient(135deg, #ffad5b, #ffcf5c)',
-  'linear-gradient(135deg, #cb68ff, #c47aff)',
-  'linear-gradient(135deg, #ff9a8b, #ff6a88)',
-  'linear-gradient(135deg, #6bd273, #8dde6b)',
-];
+  "linear-gradient(135deg, #ff6b6b, #ff8e8e)",
+  "linear-gradient(135deg, #4ecdc4, #2cbfc7)",
+  "linear-gradient(135deg, #45b7d1, #2a93bc)",
+  "linear-gradient(135deg, #6a67ce, #9183ff)",
+  "linear-gradient(135deg, #ffad5b, #ffcf5c)",
+  "linear-gradient(135deg, #cb68ff, #c47aff)",
+  "linear-gradient(135deg, #ff9a8b, #ff6a88)",
+  "linear-gradient(135deg, #6bd273, #8dde6b)",
+]
 
-// Module icons (you can replace these with actual icons)
-const moduleIcons = ['◎', '◉', '◈', '⬗', '⬘', '⬙', '⬟', '◉'];
+// Module icons
+const moduleIcons = ["◎", "◉", "◈", "⬗", "⬘", "⬙", "⬟", "◉"]
 
 // Generate random stars
 const generateStars = (count) => {
-  const stars = [];
+  const stars = []
   for (let i = 0; i < count; i++) {
     stars.push({
       id: i,
@@ -348,137 +332,134 @@ const generateStars = (count) => {
       opacity: Math.random() * 0.5 + 0.2,
       top: Math.random() * 100,
       left: Math.random() * 100,
-      duration: Math.random() * 3 + 2
-    });
+      duration: Math.random() * 3 + 2,
+    })
   }
-  return stars;
-};
+  return stars
+}
 
 const Modules = () => {
-  const [modules, setModules] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [stars] = useState(() => generateStars(50));
-  const [branchCodes, setBranchCodes] = useState([]);
-  const [selectedModuleLink, setSelectedModuleLink] = useState(null);
-  const [error, setError] = useState('');
-
-  const [entitlements, setEntitlements] = useState([]);
-
-  const navigate = useNavigate(); // Hook for navigation
+  const [modules, setModules] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [stars] = useState(() => generateStars(50))
+  const [branchCodes, setBranchCodes] = useState([])
+  const [selectedModuleLink, setSelectedModuleLink] = useState(null)
+  const [error, setError] = useState("")
+  const [entitlements, setEntitlements] = useState([])
+  const navigate = useNavigate()
 
   // Check authentication at component mount
   useEffect(() => {
-    
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token")
+    var user
 
-       
-    var user;
-    try {     
+    try {
       user = validate(token)
+      const allowedData = user.allowedData()
+      console.log(allowedData, "allowedData")
+      setBranchCodes(allowedData)
 
-      const allowedData = user.allowedData(); // Assuming this method exists
-      console.log(allowedData,"allowedData")
-      setBranchCodes(allowedData);
+      // **KEY CHANGE: Automatically set branch in localStorage if only one branch**
+      if (allowedData && allowedData.length === 1) {
+        localStorage.setItem("selected_branch", allowedData[0])
+        console.log("Auto-selected single branch:", allowedData[0])
+      }
+    } catch (err) {
+      localStorage.removeItem("access_token")
+      navigate(`${import.meta.env.BASE_URL}Login`)
+      return
+    }
 
-    }
-    catch(err) {
-      // console.log("chandra")
-      localStorage.removeItem("access_token");
-      navigate(`${import.meta.env.BASE_URL}Login`);
-      return;
-    }
-   
-    
     // Token is valid, proceed with fetching modules
-    const allowedModules = user.allowedModules();
-    
-    setLoading(true);
+    const allowedModules = user.allowedModules()
+    setLoading(true)
+
     fetch(`${securityBaseUrl}get_modules/`)
       .then((res) => res.json())
       .then((data) => {
         // Filter modules based on allowed module codes
-        const filteredModules = (data.modules || []).filter(module => 
-          allowedModules.includes(module.module_code)
-        );
-        
+        const filteredModules = (data.modules || []).filter((module) => allowedModules.includes(module.module_code))
+        console.log(filteredModules, "filteredModules")
+
         // Check if user has access to only one module
         if (filteredModules.length === 1) {
-          const singleModule = filteredModules[0];
+          const singleModule = filteredModules[0]
           // Redirect to that module
-          handleModuleRedirect(singleModule.module_link);
-          return;
+          handleModuleRedirect(singleModule.module_link)
+          return
         }
-        
-        setModules(filteredModules);
-        setLoading(false);
+
+        setModules(filteredModules)
+        setLoading(false)
       })
       .catch((err) => {
-        console.error('Fetch error:', err);
-        setLoading(false);
-      });
-  }, [navigate]);
-  
+        console.error("Fetch error:", err)
+        setLoading(false)
+      })
+  }, [navigate])
+
   // Handle module click
   const handleModuleClick = (moduleLink) => {
-    setError('');
-  
+    setError("")
+
     if (!branchCodes || branchCodes.length === 0) {
-      setError('No branch codes found. Please contact admin.');
-      return;
+      setError("No branch codes found. Please contact admin.")
+      return
     }
-  
+
     if (branchCodes.length === 1) {
-      localStorage.setItem('selected_branch', branchCodes[0]);
+      // **UPDATED: Branch should already be set in localStorage from useEffect**
+      // But we'll ensure it's set here as well for safety
+      if (!localStorage.getItem("selected_branch")) {
+        localStorage.setItem("selected_branch", branchCodes[0])
+      }
       // Only one branch, navigate directly
-      handleModuleRedirect(`${moduleLink}`);
+      handleModuleRedirect(moduleLink)
     } else {
       // Multiple branches, store moduleLink and wait for dropdown selection
-      setSelectedModuleLink(moduleLink);
+      setSelectedModuleLink(moduleLink)
     }
-  };
-  
+  }
+
   useEffect(() => {
     if (branchCodes.length > 0) {
-      const codesParam = branchCodes.join(',');
+      const codesParam = branchCodes.join(",")
       fetch(`${securityBaseUrl}get_data_entitlements?branchCodes=${codesParam}`)
-        .then(res => res.json())
-        .then(data => {
-          console.log('Branch Names:', data.dataEntitlements);
-          setEntitlements(data.dataEntitlements || []);
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Branch Names:", data.dataEntitlements)
+          setEntitlements(data.dataEntitlements || [])
         })
-        .catch(err => console.error('Entitlements fetch error:', err));
+        .catch((err) => console.error("Entitlements fetch error:", err))
     }
-  }, [branchCodes]);
-  
-  
-  
+  }, [branchCodes])
+
   // Handle module redirection
   const handleModuleRedirect = (moduleLink) => {
     // If link is internal (starts with /)
-    if (moduleLink.startsWith('/')) {
-      navigate(moduleLink);
+    if (moduleLink.startsWith("/")) {
+      navigate(moduleLink)
     } else {
       // For external links that need to be in the same tab
-      window.location.href = moduleLink;
+      window.location.href = moduleLink
     }
-  };
-  
+  }
+
   // Generate mock descriptions if they're not provided
   const getDescription = (name) => {
     const descriptions = {
-      'Security': 'Access security settings and permissions for your organization',
-      'Users': 'Manage user accounts and role assignments',
-      'Reports': 'Generate and view analytics reports and insights',
-      'Dashboard': 'View key metrics and performance indicators',
-      'Settings': 'Configure system-wide preferences and options',
-      'Shanmuga Diagnostics': 'Access and manage all diagnostic services and reports',
-      'SD Lab': 'Manage laboratory tests and results',
-      'SD Imaging': 'View and analyze diagnostic imaging studies',
-      'SD Reports': 'Generate comprehensive diagnostic reports',
-    };
-    
-    return descriptions[name] || `Access and manage ${name} diagnostic services`;
-  };
+      Security: "Access security settings and permissions for your organization",
+      Users: "Manage user accounts and role assignments",
+      Reports: "Generate and view analytics reports and insights",
+      Dashboard: "View key metrics and performance indicators",
+      Settings: "Configure system-wide preferences and options",
+      "Shanmuga Diagnostics": "Access and manage all diagnostic services and reports",
+      "SD Lab": "Manage laboratory tests and results",
+      "SD Imaging": "View and analyze diagnostic imaging studies",
+      "SD Reports": "Generate comprehensive diagnostic reports",
+    }
+    return descriptions[name] || `Access and manage ${name} diagnostic services`
+  }
 
   if (loading) {
     return (
@@ -488,7 +469,7 @@ const Modules = () => {
         <Orb3 />
         <Stars>
           {stars.map((star) => (
-            <Star 
+            <Star
               key={star.id}
               size={star.size}
               opacity={star.opacity}
@@ -507,7 +488,7 @@ const Modules = () => {
           <LoadingText>Loading Shanmuga Diagnostics modules...</LoadingText>
         </LoadingAnimation>
       </Container>
-    );
+    )
   }
 
   return (
@@ -517,7 +498,7 @@ const Modules = () => {
       <Orb3 />
       <Stars>
         {stars.map((star) => (
-          <Star 
+          <Star
             key={star.id}
             size={star.size}
             opacity={star.opacity}
@@ -531,81 +512,73 @@ const Modules = () => {
         <HeaderSection>
           <Title>Welcome To Shanmuga Hospital</Title>
         </HeaderSection>
-        {error && (
-  <div style={{ color: 'red', textAlign: 'center', marginBottom: '1rem' }}>
-    {error}
-  </div>
-)}
 
-{!selectedModuleLink && (
-  <ModulesWrapper>
-    {modules.length > 0 ? (
-      modules.map((module, index) => (
-        <ModuleCard
-          key={module.module_code}
-          gradient={gradients[index % gradients.length]}
-          index={index}
-          onClick={() => handleModuleClick(module.module_link)}
-        >
-          <ModuleIcon gradient={gradients[index % gradients.length]}>
-            {moduleIcons[index % moduleIcons.length]}
-          </ModuleIcon>
-          <ModuleName>{module.module_name}</ModuleName>
-          <ModuleDescription>
-            {module.description || getDescription(module.module_name)}
-          </ModuleDescription>
-          <ActionSection>
-            <LaunchButton gradient={gradients[index % gradients.length]}>
-              Launch <Arrow>→</Arrow>
-            </LaunchButton>
-            <Badge>v{module.version || '1.0'}</Badge>
-          </ActionSection>
-        </ModuleCard>
-      ))
-    ) : (
-      <div style={{ textAlign: 'center', width: '100%', padding: '2rem' }}>
-        <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '1.1rem' }}>
-          No Shanmuga Diagnostics modules available for your account.
-        </p>
-      </div>
-    )}
-  </ModulesWrapper>
-)}
+        {error && <div style={{ color: "red", textAlign: "center", marginBottom: "1rem" }}>{error}</div>}
 
- {selectedModuleLink && branchCodes.length > 1 && (
-  <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-    <p style={{ color: '#fff', marginBottom: '0.5rem' }}>Select a branch to proceed:</p>
-    <select
-      onChange={(e) => {
-        const selected = e.target.value;
-        if (selected) {
-          localStorage.setItem("selected_branch", selected); 
-          handleModuleRedirect(`${selectedModuleLink}`);
-        }
-      }}
-      style={{
-        padding: '0.5rem',
-        fontSize: '1rem',
-        borderRadius: '5px',
-        border: 'none',
-        outline: 'none'
-      }}
-    >
-      <option value="">-- Select Branch --</option>
-      {entitlements.map(({ DataEntitlementsCode, DataEntitlements }) => (
-  <option key={DataEntitlementsCode} value={DataEntitlementsCode}>
-    {DataEntitlements || DataEntitlementsCode}
-  </option>
-))}
+        {!selectedModuleLink && (
+          <ModulesWrapper>
+            {modules.length > 0 ? (
+              modules.map((module, index) => (
+                <ModuleCard
+                  key={module.module_code}
+                  gradient={gradients[index % gradients.length]}
+                  index={index}
+                  onClick={() => handleModuleClick(module.module_link)}
+                >
+                  <ModuleIcon gradient={gradients[index % gradients.length]}>
+                    {moduleIcons[index % moduleIcons.length]}
+                  </ModuleIcon>
+                  <ModuleName>{module.module_name}</ModuleName>
+                  <ModuleDescription>{module.description || getDescription(module.module_name)}</ModuleDescription>
+                  <ActionSection>
+                    <LaunchButton gradient={gradients[index % gradients.length]}>
+                      Launch <Arrow>→</Arrow>
+                    </LaunchButton>
+                    <Badge>v{module.version || "1.0"}</Badge>
+                  </ActionSection>
+                </ModuleCard>
+              ))
+            ) : (
+              <div style={{ textAlign: "center", width: "100%", padding: "2rem" }}>
+                <p style={{ color: "rgba(255, 255, 255, 0.8)", fontSize: "1.1rem" }}>
+                  No Shanmuga Diagnostics modules available for your account.
+                </p>
+              </div>
+            )}
+          </ModulesWrapper>
+        )}
 
-    </select>
-  </div>
-)}
-
-
+        {selectedModuleLink && branchCodes.length > 1 && (
+          <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+            <p style={{ color: "#fff", marginBottom: "0.5rem" }}>Select a branch to proceed:</p>
+            <select
+              onChange={(e) => {
+                const selected = e.target.value
+                if (selected) {
+                  localStorage.setItem("selected_branch", selected)
+                  handleModuleRedirect(selectedModuleLink)
+                }
+              }}
+              style={{
+                padding: "0.5rem",
+                fontSize: "1rem",
+                borderRadius: "5px",
+                border: "none",
+                outline: "none",
+              }}
+            >
+              <option value="">-- Select Branch --</option>
+              {entitlements.map(({ DataEntitlementsCode, DataEntitlements }) => (
+                <option key={DataEntitlementsCode} value={DataEntitlementsCode}>
+                  {DataEntitlements || DataEntitlementsCode}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </ContentWrapper>
     </Container>
-  );
-};
+  )
+}
 
-export default Modules;
+export default Modules
