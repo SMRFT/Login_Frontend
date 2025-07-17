@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
-import {validate} from "jsauth";
-// import {validate} from "../jwt-check";
+"use client"
 
-const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL;
-console.log("hj", securityBaseUrl);
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import styled from "styled-components"
+
+const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL
+console.log("hj", securityBaseUrl)
+
 // Updated Container with a subtle gradient background
 const Container = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const Container = styled.div`
   align-items: center;
   height: 100vh;
   background: linear-gradient(135deg, #f0f2f5 0%, #d9e4f5 100%);
-`;
+`
 
 const FormWrapper = styled.div`
   background: rgba(255, 255, 255, 0.95);
@@ -27,20 +28,63 @@ const FormWrapper = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
-
   &:hover {
     transform: translateY(-6px);
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
   }
-`;
+`
+
+const LogoSection = styled.div`
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const LogoContainer = styled.div`
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #845ec2, #d65db1);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 24px rgba(132, 94, 194, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(132, 94, 194, 0.4);
+  }
+`
+
+const LogoIcon = styled.div`
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+`
+
+const HospitalName = styled.h1`
+  color: #2e2e2e;
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin: 0;
+  background: linear-gradient(90deg, #845ec2, #d65db1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 0.5px;
+`
 
 const Title = styled.h2`
   margin-bottom: 2.2rem;
   color: #2e2e2e;
-  font-weight: 700;
-  font-size: 2.1rem;
+  font-weight: 600;
+  font-size: 1.5rem;
   position: relative;
-
+  margin-top: 1rem;
+  
   &:after {
     content: '';
     position: absolute;
@@ -52,26 +96,26 @@ const Title = styled.h2`
     background: linear-gradient(90deg, #845ec2, #d65db1);
     border-radius: 3px;
   }
-`;
+`
 
 const InputGroup = styled.div`
   position: relative;
   margin-bottom: 2.1rem;
-`;
+`
 
 const InputLabel = styled.label`
   position: absolute;
   left: 18px;
-  top: ${props => props.filled ? '-10px' : '13px'};
-  font-size: ${props => props.filled ? '12px' : '16px'};
-  color: ${props => props.filled ? '#845ec2' : '#aaa'};
+  top: ${(props) => (props.filled ? "-10px" : "13px")};
+  font-size: ${(props) => (props.filled ? "12px" : "16px")};
+  color: ${(props) => (props.filled ? "#845ec2" : "#aaa")};
   background: white;
   padding: 0 5px;
   transition: all 0.3s ease;
   pointer-events: none;
   font-weight: 500;
   letter-spacing: 0.3px;
-`;
+`
 
 const Input = styled.input`
   width: 100%;
@@ -81,21 +125,21 @@ const Input = styled.input`
   font-size: 15px;
   background-color: #fdfdfd;
   transition: all 0.3s ease-in-out;
-
+  
   &:focus {
     border-color: #845ec2;
     box-shadow: 0 0 0 4px rgba(132, 94, 194, 0.1);
     outline: none;
     background-color: #fff;
   }
-
+  
   &:focus + ${InputLabel} {
     top: -10px;
     font-size: 12px;
     color: #845ec2;
     font-weight: 600;
   }
-`;
+`
 
 const Button = styled.button`
   width: 100%;
@@ -111,17 +155,17 @@ const Button = styled.button`
   transition: all 0.3s;
   position: relative;
   box-shadow: 0 4px 16px rgba(132, 94, 194, 0.25);
-
+  
   &:hover {
     background: linear-gradient(90deg, #845ec2, #ff6f91);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(255, 111, 145, 0.3);
   }
-
+  
   &:active {
     transform: scale(0.98);
   }
-
+  
   &:after {
     content: '';
     position: absolute;
@@ -137,12 +181,12 @@ const Button = styled.button`
     opacity: 0;
     transition: all 0.5s ease-in-out;
   }
-
+  
   &:hover:after {
     opacity: 1;
     transform: rotate(25deg) translateY(-15%);
   }
-`;
+`
 
 const ErrorMessage = styled.div`
   color: #e74c3c;
@@ -156,13 +200,13 @@ const ErrorMessage = styled.div`
   display: flex;
   align-items: center;
   animation: fadeInUp 0.4s ease;
-
+  
   &:before {
     content: "⚠️";
     margin-right: 10px;
     font-size: 16px;
   }
-
+  
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -173,71 +217,78 @@ const ErrorMessage = styled.div`
       transform: translateY(0);
     }
   }
-`;
+`
 
-
-// The rest of your component remains the same
 const Login = () => {
   const [formData, setFormData] = useState({
     employeeId: "",
     password: "",
-  });
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  })
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-    }));
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    }))
+  }
 
+  // useEffect(() => {
+  //   localStorage.removeItem("access_token")
+  //   localStorage.removeItem("user_payload")
+  //   localStorage.removeItem("selected_branch")
+  // }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     if (!formData.employeeId || !formData.password) {
-      setError("Please enter both Employee ID and Password.");
-      return;
+      setError("Please enter both Employee ID and Password.")
+      return
     }
 
     try {
       const res = await axios.post(securityBaseUrl + "login/", formData, {
         headers: { "Content-Type": "application/json" },
-      });
-
-      const { access_token } = res.data;
-
-      localStorage.setItem("access_token", access_token);
-      navigate(`${import.meta.env.BASE_URL}secure`);
+      })
+      const { access_token } = res.data
+      localStorage.setItem("access_token", access_token)
+      navigate(`${import.meta.env.BASE_URL}secure`)
     } catch (err) {
-      console.error("Login error:", err.response?.data || err);
-      setError(err.response?.data?.message || "Invalid credentials");
+      console.error("Login error:", err.response?.data || err)
+      setError(err.response?.data?.message || "Invalid credentials")
     }
-  };
+  }
 
   return (
     <Container>
       <FormWrapper>
+        <LogoSection>
+          <LogoContainer>
+            <LogoIcon>🏥</LogoIcon>
+          </LogoContainer>
+          <HospitalName>Shanmuga Hospital</HospitalName>
+        </LogoSection>
+
         <Title>Employee Login</Title>
+
         {error && <ErrorMessage>{error}</ErrorMessage>}
+
         <form onSubmit={handleSubmit}>
           <InputGroup>
-            <Input 
-              type="text" 
-              name="employeeId" 
+            <Input
+              type="text"
+              name="employeeId"
               id="employeeId"
               value={formData.employeeId}
-              onChange={handleChange} 
-              required 
+              onChange={handleChange}
+              required
             />
-            <InputLabel 
-              htmlFor="employeeId" 
-              filled={formData.employeeId.length > 0}
-            >
+            <InputLabel htmlFor="employeeId" filled={formData.employeeId.length > 0}>
               Employee ID
             </InputLabel>
           </InputGroup>
-          
+
           <InputGroup>
             <Input
               type="password"
@@ -247,19 +298,16 @@ const Login = () => {
               onChange={handleChange}
               required
             />
-            <InputLabel 
-              htmlFor="password"
-              filled={formData.password.length > 0}
-            >
+            <InputLabel htmlFor="password" filled={formData.password.length > 0}>
               Password
             </InputLabel>
           </InputGroup>
-          
+
           <Button type="submit">Sign In</Button>
         </form>
       </FormWrapper>
     </Container>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
