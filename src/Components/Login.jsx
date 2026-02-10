@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import styled, { keyframes } from "styled-components"
 import { validate } from "jsauth"
+import ShinovaLogo from "./Images/Shinova.png"
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL
 
@@ -76,7 +77,7 @@ const BackgroundContainer = styled.div`
   height: 100%;
   overflow: hidden;
   z-index: -1;
-  background: linear-gradient(135deg, #f1faee 0%, #f1faee 50%, #f1faee 100%);
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFD1D1 50%, #FFF5F5 100%);
 `
 
 // Animated Medical Icons
@@ -227,9 +228,9 @@ const Header = styled.div`
 `
 
 const Logo = styled.div`
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  width: 120px;
+  height: 120px;
+  background: white;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -249,7 +250,7 @@ const HospitalName = styled.h1`
   font-size: 1.8rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #a8dadc, #a8dadc);
+  background: linear-gradient(135deg, #eb3349, #f45c43);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -284,8 +285,8 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    border-color: #eb3349;
+    box-shadow: 0 0 0 4px rgba(235, 51, 73, 0.1);
     background: #ffffff;
   }
 
@@ -303,7 +304,7 @@ const Input = styled.input`
 const Button = styled.button`
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #eb3349, #f45c43);
   color: white;
   border: none;
   border-radius: 16px;
@@ -317,7 +318,7 @@ const Button = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 30px rgba(235, 51, 73, 0.4);
   }
 
   &:active:not(:disabled) {
@@ -383,7 +384,7 @@ const SuccessMessage = styled.div`
 const ForgotPasswordLink = styled.button`
   background: none;
   border: none;
-  color: #667eea;
+  color: #eb3349;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -566,7 +567,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!formData.employeeId.trim() || !formData.password.trim()) {
       setError("Please enter both Employee ID and Password.")
       return
@@ -602,7 +603,7 @@ const Login = () => {
       }
 
       setSuccess("Login successful! Redirecting...")
-      
+
       setTimeout(() => {
         navigate(`${import.meta.env.BASE_URL}secure`)
       }, 1000)
@@ -666,9 +667,11 @@ const Login = () => {
       <Container>
         <LoginCard>
           <Header>
-            <Logo>🏥</Logo>
-            <HospitalName>Shanmuga Hospital</HospitalName>
-            <Subtitle>Employee Portal</Subtitle>
+            <Logo>
+              <img src={ShinovaLogo} alt="Logo" style={{ width: '80%', height: 'auto' }} />
+            </Logo>
+            <HospitalName>Shanmuga Innovations</HospitalName>
+            {/* <Subtitle>Employee Portal</Subtitle> */}
           </Header>
 
           {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -715,7 +718,7 @@ const Login = () => {
         <Modal onClick={(e) => e.target === e.currentTarget && handleCloseForgotModal()}>
           <ModalContent>
             <ModalHeader>Reset Password</ModalHeader>
-            
+
             {success ? (
               <>
                 <SuccessMessage>{success}</SuccessMessage>
@@ -726,9 +729,9 @@ const Login = () => {
                 <ModalText>
                   Enter your Employee ID and we'll send you a link to reset your password.
                 </ModalText>
-                
+
                 {error && <ErrorMessage>{error}</ErrorMessage>}
-                
+
                 <InputGroup>
                   <Input
                     type="text"
@@ -741,14 +744,14 @@ const Login = () => {
                 </InputGroup>
               </>
             )}
-            
+
             <ModalButtons>
               <ModalButton onClick={handleCloseForgotModal} disabled={isLoading}>
                 Cancel
               </ModalButton>
               {!success && (
-                <ModalButton 
-                  primary 
+                <ModalButton
+                  primary
                   onClick={handleForgotPasswordSubmit}
                   disabled={isLoading}
                 >

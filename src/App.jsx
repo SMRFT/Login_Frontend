@@ -2,8 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Login from "./Components/Login";
 import Modules from "./Components/Modules";
-import Landing from "./Components/Landing";
+import Homescreen from "./Components/Homescreen";
 import PrivateRoute from './Components/PrivateRoute';
+import Mdashboard from './Components/Mdashboard';
 
 const ContentWrapper = styled.div`
   margin-top: 15px;
@@ -31,15 +32,20 @@ function App() {
 
         {/* Protected Routes */}
         <Route >
-          <Route path={`${import.meta.env.BASE_URL}`} element={<Landing />} />
+          <Route path={`${import.meta.env.BASE_URL}`} element={<Homescreen />} />
           {/* Add more protected routes here */}
         </Route>
-        
+
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
           <Route path={`${import.meta.env.BASE_URL}secure`} element={<Modules />} />
           {/* Add more protected routes here */}
         </Route>
+        <Route element={<PrivateRoute />}>
+          <Route path={`${import.meta.env.BASE_URL}dashboard`} element={<Mdashboard />} />
+          {/* Add more protected routes here */}
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );
