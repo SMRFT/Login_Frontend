@@ -58,12 +58,13 @@ const projects = [
   { name: "Global", url: "/global", note: "Global management system..." },
 ];
 
-const glowColors = ["#FB2576", "#7A0BC0", "#17A2B8", "#C70D3A", "#FF8A08", "#A7D129", "#FAEF5D", "#28A745"];
+const glowColors = ["#06b6d4", "#ef4444", "#06b6d4", "#ef4444", "#06b6d4", "#ef4444", "#06b6d4", "#ef4444"];
 
 // Container and orbs
 const OuterContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a103c, #2d1f5b, #222b4a);
+  width: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   background-size: 400% 400%;
   animation: ${gradientMove} 15s ease infinite;
   display: flex;
@@ -71,7 +72,12 @@ const OuterContainer = styled.div`
   justify-content: center;
   padding: 2rem;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const BackgroundOrb = styled.div`
@@ -85,7 +91,7 @@ const BackgroundOrb = styled.div`
 const Orb1 = styled(BackgroundOrb)`
   width: 300px;
   height: 300px;
-  background: rgba(255, 107, 107, 0.3);
+  background: rgba(239, 68, 68, 0.2); /* Red glow */
   top: -50px;
   right: -50px;
   animation: ${orb1Move} 10s ease-in-out infinite;
@@ -94,7 +100,7 @@ const Orb1 = styled(BackgroundOrb)`
 const Orb2 = styled(BackgroundOrb)`
   width: 400px;
   height: 400px;
-  background: rgba(78, 205, 196, 0.2);
+  background: rgba(6, 182, 212, 0.15); /* Cyan glow */
   bottom: -100px;
   left: -100px;
   animation: ${orb2Move} 15s ease-in-out infinite;
@@ -103,7 +109,7 @@ const Orb2 = styled(BackgroundOrb)`
 const Orb3 = styled(BackgroundOrb)`
   width: 250px;
   height: 250px;
-  background: rgba(186, 104, 200, 0.15);
+  background: rgba(255, 255, 255, 0.05);
   top: 30%;
   left: 40%;
   animation: ${orb3Move} 20s linear infinite;
@@ -132,12 +138,12 @@ const Title = styled.h1`
   font-weight: 700;
   margin-bottom: 60px;
   color: transparent;
-  background: linear-gradient(to right, #FB2576, #7A0BC0, #17A2B8, #FF8A08);
+  background: linear-gradient(to right, #06b6d4, #ef4444, #06b6d4, #ef4444);
   background-size: 300% 300%;
   background-clip: text;
   -webkit-background-clip: text;
   animation: ${gradientMove} 8s ease infinite;
-  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 10px rgba(6, 182, 212, 0.4);
   letter-spacing: 1px;
   transform: translateY(20px);
   opacity: 0;
@@ -211,7 +217,8 @@ const HexagonFace = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    background: ${props => props.background || '#1a1a2e'};
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism base */
+    backdrop-filter: blur(10px);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     z-index: -1;
   }
@@ -219,7 +226,7 @@ const HexagonFace = styled.div`
 
 const HexagonFront = styled(HexagonFace)`
   &:before {
-    border: 2px solid ${props => props.glow};
+    border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: inset 0 0 20px ${props => props.glow}, 0 0 15px ${props => props.glow};
   }
 `;
@@ -228,8 +235,8 @@ const HexagonBack = styled(HexagonFace)`
   transform: rotateY(180deg);
   
   &:before {
-    background: ${props => props.glow};
-    opacity: 0.2;
+    background: rgba(255, 255, 255, 0.15); /* Slightly darker glass for back */
+    border: 1px solid ${props => props.glow};
     box-shadow: inset 0 0 30px ${props => props.glow}, 0 0 20px ${props => props.glow};
   }
 `;
@@ -310,7 +317,7 @@ const Star = styled.div`
 function Landing() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -321,9 +328,9 @@ function Landing() {
     const opacity = Math.random() * 0.5 + 0.1;
     const top = Math.random() * 100;
     const left = Math.random() * 100;
-    
+
     return (
-      <Star 
+      <Star
         key={i}
         size={size}
         opacity={opacity}
@@ -348,7 +355,7 @@ function Landing() {
           <CardGrid>
             {projects.map((project, index) => (
               <CardWrapper key={index} index={index}>
-                <HexagonCard 
+                <HexagonCard
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                   onClick={() => window.open(project.url, "_blank")}

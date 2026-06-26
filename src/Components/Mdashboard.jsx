@@ -80,14 +80,45 @@ const fadeInUp = keyframes`
 // --- Layout Components ---
 const Layout = styled.div`
   width: 100%;
-  min-height: 100vh;
-  padding: 2rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 2rem;
   box-sizing: border-box;
   max-width: 1600px;
   margin: 0 auto;
+  overflow: hidden;
+  background-color: var(--bg-body);
   
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     padding: 1rem;
+  }
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 100vh;
+    padding: 1rem;
+    overflow-y: auto;
+    display: block;
+  }
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-top: 1rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 768px) {
+    overflow-y: visible;
+    padding-right: 0;
   }
 `;
 
@@ -95,7 +126,6 @@ const HeaderBar = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2.5rem;
   background: var(--card-bg);
   backdrop-filter: blur(16px);
   padding: 1rem 2rem;
@@ -165,6 +195,11 @@ const TopBar = styled.div`
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
   gap: 2rem;
+
+  @media (max-width: 1024px) {
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
 `;
 
 const WelcomeMsg = styled.div`
@@ -263,6 +298,11 @@ const Grid = styled.div`
   display: grid;
   gap: 2rem;
   margin-bottom: 2.5rem;
+
+  @media (max-width: 1024px) {
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const StatGrid = styled(Grid)`
@@ -283,6 +323,10 @@ const GlassCard = styled.div`
   border: var(--glass-border);
   border-radius: 20px;
   padding: 1.8rem;
+  
+  @media (max-width: 1024px) {
+    padding: 1.2rem;
+  }
   
   &:hover {
     transform: translateY(-5px);
@@ -315,6 +359,10 @@ const MetricValue = styled.div`
   margin-bottom: 0.8rem;
   letter-spacing: -1.5px;
   text-shadow: 0 0 10px rgba(255,255,255,0.3);
+
+  @media (max-width: 1024px) {
+    font-size: 2rem;
+  }
 `;
 
 const MetricTrend = styled.div`
@@ -602,292 +650,293 @@ const MDashboard = () => {
         </FilterGroup>
       </TopBar>
 
-      {data ? (
-        <>
-          {/* --- 1. Global Overview Section --- */}
-          <ChartTitle>Global Overview</ChartTitle>
-          <StatGrid>
-            <GlassCard delay="0.1s">
-              <MetricTitle>
-                Total Samples
-                <div style={{ background: 'rgba(99, 102, 241, 0.1)', padding: '8px', borderRadius: '12px', color: 'var(--primary)' }}>
-                  <i className="bi bi-droplet-fill"></i>
-                </div>
-              </MetricTitle>
-              <MetricValue>{data.samples.total}</MetricValue>
-              <MetricTrend positive>
-                <i className="bi bi-graph-up-arrow"></i>
-                +12% <span>vs yesterday</span>
-              </MetricTrend>
-            </GlassCard>
+      <MainContent>
+        {data ? (
+          <>
+            {/* --- 1. Global Overview Section --- */}
+            <ChartTitle>Global Overview</ChartTitle>
+            <StatGrid>
+              <GlassCard delay="0.1s">
+                <MetricTitle>
+                  Total Samples
+                  <div style={{ background: 'rgba(99, 102, 241, 0.1)', padding: '8px', borderRadius: '12px', color: 'var(--primary)' }}>
+                    <i className="bi bi-droplet-fill"></i>
+                  </div>
+                </MetricTitle>
+                <MetricValue>{data.samples.total}</MetricValue>
+                <MetricTrend positive>
+                  <i className="bi bi-graph-up-arrow"></i>
+                  +12% <span>vs yesterday</span>
+                </MetricTrend>
+              </GlassCard>
 
-            <GlassCard delay="0.2s">
-              <MetricTitle>
-                Tests Processed
-                <div style={{ background: 'rgba(236, 72, 153, 0.1)', padding: '8px', borderRadius: '12px', color: '#ec4899' }}>
-                  <i className="bi bi-activity"></i>
-                </div>
-              </MetricTitle>
-              <MetricValue>{data.tests.total}</MetricValue>
-            </GlassCard>
+              <GlassCard delay="0.2s">
+                <MetricTitle>
+                  Tests Processed
+                  <div style={{ background: 'rgba(236, 72, 153, 0.1)', padding: '8px', borderRadius: '12px', color: '#ec4899' }}>
+                    <i className="bi bi-activity"></i>
+                  </div>
+                </MetricTitle>
+                <MetricValue>{data.tests.total}</MetricValue>
+              </GlassCard>
 
-            <GlassCard delay="0.3s">
-              <MetricTitle>
-                Net Revenue
-                <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '8px', borderRadius: '12px', color: 'var(--success)' }}>
-                  <i className="bi bi-currency-rupee"></i>
-                </div>
-              </MetricTitle>
-              <MetricValue>{formatCurrency(data.financials.net_amount)}</MetricValue>
-              <MetricTrend positive>
-                <i className="bi bi-check-circle-fill"></i>
-                Healthy <span>margin</span>
-              </MetricTrend>
-            </GlassCard>
-          </StatGrid>
+              <GlassCard delay="0.3s">
+                <MetricTitle>
+                  Net Revenue
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '8px', borderRadius: '12px', color: 'var(--success)' }}>
+                    <i className="bi bi-currency-rupee"></i>
+                  </div>
+                </MetricTitle>
+                <MetricValue>{formatCurrency(data.financials.net_amount)}</MetricValue>
+                <MetricTrend positive>
+                  <i className="bi bi-check-circle-fill"></i>
+                  Healthy <span>margin</span>
+                </MetricTrend>
+              </GlassCard>
+            </StatGrid>
 
-          {/* --- 2. Workforce & HR Section --- */}
-          {data.employee_stats && (
-            <>
-              <ChartTitle style={{ marginTop: '2rem' }}>Workforce & HR</ChartTitle>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '2.5rem' }}>
-                <GlassCard delay="0.15s">
-                  <h3 style={{ color: 'var(--text-dark)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <i className="bi bi-people-fill" style={{ color: 'var(--secondary)' }}></i> Global Employees
-                  </h3>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                    <div>
-                      <div style={{ fontSize: '3rem', fontWeight: '800', color: 'var(--text-dark)', lineHeight: 1 }}>
-                        {data.employee_stats.total_employees}
-                      </div>
-                      <div style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Total Staff</div>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', width: '50%' }}>
-                      {/* Male Bar */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <i className="bi bi-gender-male" style={{ color: '#3f5efb' }}></i>
-                        <div style={{ flex: 1, background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
-                          <div style={{
-                            width: `${(data.employee_stats.male / (data.employee_stats.total_employees || 1)) * 100}%`,
-                            background: '#3f5efb',
-                            height: '100%'
-                          }}></div>
+            {/* --- 2. Workforce & HR Section --- */}
+            {data.employee_stats && (
+              <>
+                <ChartTitle style={{ marginTop: '2rem' }}>Workforce & HR</ChartTitle>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '2.5rem' }}>
+                  <GlassCard delay="0.15s">
+                    <h3 style={{ color: 'var(--text-dark)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <i className="bi bi-people-fill" style={{ color: 'var(--secondary)' }}></i> Global Employees
+                    </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                      <div>
+                        <div style={{ fontSize: '3rem', fontWeight: '800', color: 'var(--text-dark)', lineHeight: 1 }}>
+                          {data.employee_stats.total_employees}
                         </div>
-                        <span style={{ fontWeight: '600', minWidth: '30px' }}>{data.employee_stats.male}</span>
+                        <div style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Total Staff</div>
                       </div>
 
-                      {/* Female Bar */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <i className="bi bi-gender-female" style={{ color: '#ec4899' }}></i>
-                        <div style={{ flex: 1, background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
-                          <div style={{
-                            width: `${(data.employee_stats.female / (data.employee_stats.total_employees || 1)) * 100}%`,
-                            background: '#ec4899',
-                            height: '100%'
-                          }}></div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', width: '50%' }}>
+                        {/* Male Bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <i className="bi bi-gender-male" style={{ color: '#3f5efb' }}></i>
+                          <div style={{ flex: 1, background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{
+                              width: `${(data.employee_stats.male / (data.employee_stats.total_employees || 1)) * 100}%`,
+                              background: '#3f5efb',
+                              height: '100%'
+                            }}></div>
+                          </div>
+                          <span style={{ fontWeight: '600', minWidth: '30px' }}>{data.employee_stats.male}</span>
                         </div>
-                        <span style={{ fontWeight: '600', minWidth: '30px' }}>{data.employee_stats.female}</span>
+
+                        {/* Female Bar */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <i className="bi bi-gender-female" style={{ color: '#ec4899' }}></i>
+                          <div style={{ flex: 1, background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{
+                              width: `${(data.employee_stats.female / (data.employee_stats.total_employees || 1)) * 100}%`,
+                              background: '#ec4899',
+                              height: '100%'
+                            }}></div>
+                          </div>
+                          <span style={{ fontWeight: '600', minWidth: '30px' }}>{data.employee_stats.female}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </GlassCard>
+                  </GlassCard>
 
-                <GlassCard delay="0.25s">
-                  <h3 style={{ color: 'var(--text-dark)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <i className="bi bi-person-check-fill" style={{ color: 'var(--success)' }}></i> Today's Attendance
-                  </h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                    <div style={{ position: 'relative', width: '100px', height: '100px' }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={[
-                              { value: data.employee_stats.attendance_today, fill: 'var(--success)' },
-                              { value: (data.employee_stats.total_employees - data.employee_stats.attendance_today), fill: 'rgba(255,255,255,0.1)' }
-                            ]}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={30}
-                            outerRadius={45}
-                            startAngle={90}
-                            endAngle={-270}
-                            dataKey="value"
-                            stroke="none"
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--text-dark)' }}>
-                        {Math.round((data.employee_stats.attendance_today / (data.employee_stats.total_employees || 1)) * 100)}%
+                  <GlassCard delay="0.25s">
+                    <h3 style={{ color: 'var(--text-dark)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <i className="bi bi-person-check-fill" style={{ color: 'var(--success)' }}></i> Today's Attendance
+                    </h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                      <div style={{ position: 'relative', width: '100px', height: '100px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { value: data.employee_stats.attendance_today, fill: 'var(--success)' },
+                                { value: (data.employee_stats.total_employees - data.employee_stats.attendance_today), fill: 'rgba(255,255,255,0.1)' }
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={30}
+                              outerRadius={45}
+                              startAngle={90}
+                              endAngle={-270}
+                              dataKey="value"
+                              stroke="none"
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--text-dark)' }}>
+                          {Math.round((data.employee_stats.attendance_today / (data.employee_stats.total_employees || 1)) * 100)}%
+                        </div>
+                      </div>
+
+                      <div>
+                        <MetricValue style={{ fontSize: '2.5rem', marginBottom: '0', color: 'var(--text-dark)' }}>
+                          {data.employee_stats.attendance_today}
+                        </MetricValue>
+                        <div style={{ color: 'var(--success)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <i className="bi bi-clock-history"></i> Live Count
+                        </div>
+                      </div>
+                    </div>
+                  </GlassCard>
+                </div>
+              </>
+            )}
+
+            {/* --- 3. Departmental Performance Grid --- */}
+            <ChartTitle style={{ marginTop: '3rem' }}>Departmental Performance</ChartTitle>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+              {prepareHybridData().map((item, index) => {
+                // Calculate contribution percentage for the mini-chart
+                const totalRev = Object.values(data.financials.gross).reduce((a, b) => a + b, 0) || 1;
+                const percentage = (item.revenue / totalRev) * 100;
+
+                // Map Icons
+                const icons = {
+                  b2b: 'bi-briefcase',
+                  home_collection: 'bi-house-heart',
+                  franchise_share: 'bi-shop',
+                  company_health_check: 'bi-building',
+                  insurance: 'bi-shield-check',
+                  milestone: 'bi-flag',
+                  er_billing: 'bi-hospital',
+                  other: 'bi-three-dots'
+                };
+                const iconClass = icons[item.rawKey] || 'bi-layers';
+
+                return (
+                  <GlassCard key={item.rawKey} delay={`${0.1 * (index + 1)}s`} style={{ borderTop: `4px solid ${item.fill}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                      <div>
+                        <h4 style={{ color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px', fontWeight: '700', marginBottom: '0.4rem' }}>
+                          {item.name}
+                        </h4>
+                        <div style={{ fontSize: '1.8rem', fontWeight: '700', color: 'var(--text-dark)', fontFamily: 'Space Mono, monospace' }}>
+                          {formatCurrency(item.revenue)} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{percentage.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                      <div style={{ background: `${item.fill}20`, color: item.fill, padding: '10px', borderRadius: '12px', boxShadow: `0 0 15px ${item.fill}40` }}>
+                        <i className={`bi ${iconClass}`} style={{ fontSize: '1.2rem' }}></i>
                       </div>
                     </div>
 
-                    <div>
-                      <MetricValue style={{ fontSize: '2.5rem', marginBottom: '0', color: 'var(--text-dark)' }}>
-                        {data.employee_stats.attendance_today}
-                      </MetricValue>
-                      <div style={{ color: 'var(--success)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <i className="bi bi-clock-history"></i> Live Count
+                    {/* Mini Chart Section: Volume vs Share */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: 'auto' }}>
+                      <div style={{ width: '60px', height: '60px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { value: item.revenue, fill: item.fill },
+                                { value: totalRev - item.revenue, fill: 'rgba(255,255,255,0.05)' }
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={20}
+                              outerRadius={30}
+                              startAngle={90}
+                              endAngle={-270}
+                              dataKey="value"
+                              stroke="none"
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.3rem', color: 'var(--text-muted)' }}>
+                          <span>Samples</span>
+                          <span style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.count}</span>
+                        </div>
+                        <div style={{ width: '100%', background: 'rgba(255,255,255,0.05)', height: '4px', borderRadius: '2px' }}>
+                          <div style={{ width: `${(item.count / (data.samples.total || 1)) * 100}%`, background: item.fill, height: '100%', borderRadius: '2px' }}></div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </GlassCard>
-              </div>
-            </>
-          )}
+                  </GlassCard>
+                );
+              })}
+            </div>
 
-          {/* --- 3. Departmental Performance Grid --- */}
-          <ChartTitle style={{ marginTop: '3rem' }}>Departmental Performance</ChartTitle>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-            {prepareHybridData().map((item, index) => {
-              // Calculate contribution percentage for the mini-chart
-              const totalRev = Object.values(data.financials.gross).reduce((a, b) => a + b, 0) || 1;
-              const percentage = (item.revenue / totalRev) * 100;
+            <ChartGrid>
+              <GlassCard delay="0.6s">
+                <ChartTitle>Revenue Distribution</ChartTitle>
+                <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={revenueData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={80}
+                        outerRadius={100}
+                        paddingAngle={6}
+                        dataKey="value"
+                        stroke="none"
+                        cornerRadius={8}
+                      >
+                        {revenueData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value) => formatCurrency(value)}
+                        contentStyle={{ background: 'rgba(255, 255, 255, 0.95)', border: 'none', borderRadius: '16px', color: 'var(--text-dark)', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)' }}
+                      />
+                      <Legend
+                        verticalAlign="bottom"
+                        height={36}
+                        iconType="circle"
+                        formatter={(value) => <span style={{ color: 'var(--text-dark)', fontWeight: 500, fontSize: '0.85rem' }}>{value}</span>}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </GlassCard>
 
-              // Map Icons
-              const icons = {
-                b2b: 'bi-briefcase',
-                home_collection: 'bi-house-heart',
-                franchise_share: 'bi-shop',
-                company_health_check: 'bi-building',
-                insurance: 'bi-shield-check',
-                milestone: 'bi-flag',
-                er_billing: 'bi-hospital',
-                other: 'bi-three-dots'
-              };
-              const iconClass = icons[item.rawKey] || 'bi-layers';
+              <GlassCard delay="0.7s">
+                <ChartTitle>Financial Summary</ChartTitle>
+                <div style={{ overflowX: 'auto' }}>
+                  <List>
+                    <ListItem style={{ background: '#ecfdf5', border: 'none', borderLeft: '4px solid var(--success)', boxShadow: 'none' }}>
+                      <ItemInfo>
+                        <span style={{ fontSize: '1.2rem', color: '#064e3b' }}>Total Net Revenue</span>
+                        <span style={{ color: '#059669', fontSize: '0.85rem' }}>After all adjustments</span>
+                      </ItemInfo>
+                      <ItemValue style={{ fontSize: '1.5rem', color: 'var(--success)' }}>{formatCurrency(data.financials.net_amount)}</ItemValue>
+                    </ListItem>
 
-              return (
-                <GlassCard key={item.rawKey} delay={`${0.1 * (index + 1)}s`} style={{ borderTop: `4px solid ${item.fill}` }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                    <div>
-                      <h4 style={{ color: 'var(--text-muted)', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px', fontWeight: '700', marginBottom: '0.4rem' }}>
-                        {item.name}
-                      </h4>
-                      <div style={{ fontSize: '1.8rem', fontWeight: '700', color: 'var(--text-dark)', fontFamily: 'Space Mono, monospace' }}>
-                        {formatCurrency(item.revenue)} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{percentage.toFixed(1)}%</span>
-                      </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '2rem' }}>
+                      <ListItem style={{ background: '#fffbeb', border: '1px solid #fef3c7' }}>
+                        <ItemInfo>
+                          <span>Credit</span>
+                          <span style={{ color: '#b45309', fontSize: '0.8rem' }}>Outstanding</span>
+                        </ItemInfo>
+                        <div style={{ color: '#d97706', fontWeight: 'bold' }}>{formatCurrency(data.financials.credit_amount)}</div>
+                      </ListItem>
+                      <ListItem>
+                        <ItemInfo>
+                          <span>Refunds</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Processed</span>
+                        </ItemInfo>
+                        <div style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>{formatCurrency(data.financials.refund_amount)}</div>
+                      </ListItem>
                     </div>
-                    <div style={{ background: `${item.fill}20`, color: item.fill, padding: '10px', borderRadius: '12px', boxShadow: `0 0 15px ${item.fill}40` }}>
-                      <i className={`bi ${iconClass}`} style={{ fontSize: '1.2rem' }}></i>
-                    </div>
-                  </div>
-
-                  {/* Mini Chart Section: Volume vs Share */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: 'auto' }}>
-                    <div style={{ width: '60px', height: '60px' }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={[
-                              { value: item.revenue, fill: item.fill },
-                              { value: totalRev - item.revenue, fill: 'rgba(255,255,255,0.05)' }
-                            ]}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={20}
-                            outerRadius={30}
-                            startAngle={90}
-                            endAngle={-270}
-                            dataKey="value"
-                            stroke="none"
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.3rem', color: 'var(--text-muted)' }}>
-                        <span>Samples</span>
-                        <span style={{ color: 'var(--text-dark)', fontWeight: '600' }}>{item.count}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                        <span>Avg Tkt</span>
-                        <span style={{ color: 'var(--text-dark)', fontWeight: '600' }}>₹{item.avgValue}</span>
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
-              );
-            })}
+                  </List>
+                </div>
+              </GlassCard>
+            </ChartGrid>
+          </>
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', flexDirection: 'column', gap: '1rem' }}>
+            <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}></div>
+            <p style={{ color: 'var(--text-muted)', opacity: 0.7, fontWeight: 500 }}>Loading Dashboard...</p>
           </div>
-
-          <ChartGrid>
-            <GlassCard delay="0.6s">
-              <ChartTitle>Revenue Distribution</ChartTitle>
-              <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={revenueData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={80}
-                      outerRadius={100}
-                      paddingAngle={6}
-                      dataKey="value"
-                      stroke="none"
-                      cornerRadius={8}
-                    >
-                      {revenueData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(value) => formatCurrency(value)}
-                      contentStyle={{ background: 'rgba(255, 255, 255, 0.95)', border: 'none', borderRadius: '16px', color: 'var(--text-dark)', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)' }}
-                    />
-                    <Legend
-                      verticalAlign="bottom"
-                      height={36}
-                      iconType="circle"
-                      formatter={(value) => <span style={{ color: 'var(--text-dark)', fontWeight: 500, fontSize: '0.85rem' }}>{value}</span>}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </GlassCard>
-
-            <GlassCard delay="0.7s">
-              <ChartTitle>Financial Summary</ChartTitle>
-              <div style={{ overflowX: 'auto' }}>
-                <List>
-                  <ListItem style={{ background: '#ecfdf5', border: 'none', borderLeft: '4px solid var(--success)', boxShadow: 'none' }}>
-                    <ItemInfo>
-                      <span style={{ fontSize: '1.2rem', color: '#064e3b' }}>Total Net Revenue</span>
-                      <span style={{ color: '#059669', fontSize: '0.85rem' }}>After all adjustments</span>
-                    </ItemInfo>
-                    <ItemValue style={{ fontSize: '1.5rem', color: 'var(--success)' }}>{formatCurrency(data.financials.net_amount)}</ItemValue>
-                  </ListItem>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '2rem' }}>
-                    <ListItem style={{ background: '#fffbeb', border: '1px solid #fef3c7' }}>
-                      <ItemInfo>
-                        <span>Credit</span>
-                        <span style={{ color: '#b45309', fontSize: '0.8rem' }}>Outstanding</span>
-                      </ItemInfo>
-                      <div style={{ color: '#d97706', fontWeight: 'bold' }}>{formatCurrency(data.financials.credit_amount)}</div>
-                    </ListItem>
-                    <ListItem>
-                      <ItemInfo>
-                        <span>Refunds</span>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Processed</span>
-                      </ItemInfo>
-                      <div style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>{formatCurrency(data.financials.refund_amount)}</div>
-                    </ListItem>
-                  </div>
-                </List>
-              </div>
-            </GlassCard>
-          </ChartGrid>
-        </>
-      ) : (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', flexDirection: 'column', gap: '1rem' }}>
-          <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}></div>
-          <p style={{ color: 'var(--text-muted)', opacity: 0.7, fontWeight: 500 }}>Loading Dashboard...</p>
-        </div>
-      )}
+        )}
+      </MainContent>
     </Layout>
   );
-}
+};
 
 export default MDashboard;

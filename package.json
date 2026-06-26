@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "axios": "^1.8.4",
-    "jsauth": "git+https://github.com/ashokkumarta/jsauth.git#v1.0.0",
+    "jsauth": "git+https://github.com/ashokkumarta/jsauth.git#v1.1.10",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
     "react": "^19.0.0",
