@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import styled, { keyframes, createGlobalStyle, css } from "styled-components";
 import { toast } from "react-toastify";
 import {
@@ -496,7 +496,7 @@ const MDashboard = () => {
     }
   }, [fromDate, toDate]);
 
-  const fetchData = async (start, end) => {
+  const fetchData = useCallback(async (start, end) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("access_token");
@@ -521,17 +521,17 @@ const MDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [securityBaseUrl]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     fetchData(fromDate, toDate);
-  };
+  }, [fetchData, fromDate, toDate]);
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = useCallback((amount) => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount || 0);
-  };
+  }, []);
 
-  const getSegmentLabel = (key) => {
+  const getSegmentLabel = useCallback((key) => {
     const labels = {
       home_collection: 'Home Collection',
       b2b: 'B2B / Clients',
@@ -543,9 +543,9 @@ const MDashboard = () => {
       other: 'Other'
     };
     return labels[key] || key.replace(/_/g, ' ').toUpperCase();
-  };
+  }, []);
 
-  const prepareSegmentData = () => {
+  const segmentData = useMemo(() => {
     if (!data) return [];
     const segments = data.samples.segments;
     return Object.keys(segments).map((key, index) => ({
@@ -553,9 +553,9 @@ const MDashboard = () => {
       value: segments[key],
       fill: COLORS[index % COLORS.length]
     })).filter(item => item.value > 0);
-  };
+  }, [data, getSegmentLabel]);
 
-  const prepareRevenueData = () => {
+  const revenueData = useMemo(() => {
     if (!data) return [];
     const gross = data.financials.gross;
     return Object.keys(gross).map((key, index) => ({
@@ -563,9 +563,9 @@ const MDashboard = () => {
       value: gross[key],
       fill: COLORS[index % COLORS.length]
     })).filter(item => item.value > 0);
-  };
+  }, [data, getSegmentLabel]);
 
-  const prepareHybridData = () => {
+  const hybridData = useMemo(() => {
     if (!data) return [];
 
     // Explicitly define ALL segments we want to show, regardless of data
@@ -581,9 +581,6 @@ const MDashboard = () => {
     ];
 
     return allKeys.map((key) => {
-      // Find matching key in backend response (sometimes inconsistent naming)
-      // We map our 'rawKey' (e.g. franchise_share) to the backend key if needed or use direct
-
       let count = 0;
       let revenue = 0;
 
@@ -605,11 +602,7 @@ const MDashboard = () => {
         fill: FINANCIAL_COLORS[key] || '#9ca3af'
       };
     }).sort((a, b) => b.revenue - a.revenue);
-  };
-
-  const segmentData = prepareSegmentData();
-  const revenueData = prepareRevenueData();
-  const hybridData = prepareHybridData();
+  }, [data, getSegmentLabel]);
 
   const navigate = useNavigate();
 

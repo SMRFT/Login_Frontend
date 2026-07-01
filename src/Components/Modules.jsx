@@ -701,7 +701,9 @@ const Modules = () => {
         console.log(allowedActions, "allowedActions")
         setLoading(true)
 
-        const res = await fetch(`${securityBaseUrl}get_modules/`)
+        const res = await fetch(`${securityBaseUrl}get_modules/`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
         const data = await res.json()
 
         // Filter modules based on allowed module codes
@@ -809,7 +811,10 @@ const Modules = () => {
   useEffect(() => {
     if (branchCodes.length > 0) {
       const codesParam = branchCodes.join(",")
-      fetch(`${securityBaseUrl}get_data_entitlements?branchCodes=${codesParam}`)
+      const entitlementsToken = localStorage.getItem("access_token")
+      fetch(`${securityBaseUrl}get_data_entitlements?branchCodes=${codesParam}`, {
+        headers: { 'Authorization': `Bearer ${entitlementsToken}` }
+      })
         .then((res) => res.json())
         .then((data) => {
           console.log("Branch Names:", data.dataEntitlements)
