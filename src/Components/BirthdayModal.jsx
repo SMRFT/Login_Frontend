@@ -26,7 +26,7 @@ const confettiFall = keyframes`
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 17, 0.85);
+  background: rgba(43, 34, 48, 0.55);
   backdrop-filter: blur(12px);
   z-index: 2000;
   display: flex;
@@ -36,22 +36,22 @@ const Overlay = styled.div`
 `;
 
 const ModalCard = styled.div`
-  background: rgba(15, 23, 42, 0.9);
+  background: #FFFFFF;
   width: 90%;
   max-width: 500px;
   border-radius: 28px;
   padding: 3rem 2rem 2rem;
-  
+
   @media (max-width: 480px) {
     padding: 2.5rem 1.25rem 1.5rem;
     width: 95%;
   }
   text-align: center;
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
-              0 0 40px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(90, 40, 70, 0.35);
   animation: ${slideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(201, 79, 135, 0.14);
+  overflow: hidden;
 
   &::before {
     content: '';
@@ -60,7 +60,7 @@ const ModalCard = styled.div`
     left: -50px;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(217, 83, 143, 0.14) 0%, transparent 70%);
     z-index: 0;
   }
 
@@ -71,7 +71,7 @@ const ModalCard = styled.div`
     right: -50px;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(43, 179, 163, 0.14) 0%, transparent 70%);
     z-index: 0;
   }
 `;
@@ -80,8 +80,8 @@ const CloseButton = styled.button`
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(217, 83, 143, 0.08);
+  border: 1px solid rgba(201, 79, 135, 0.2);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -91,11 +91,11 @@ const CloseButton = styled.button`
   cursor: pointer;
   z-index: 10;
   transition: all 0.2s;
-  color: #94a3b8;
-  
+  color: #A83A6E;
+
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: rgba(217, 83, 143, 0.16);
+    color: #A83A6E;
     transform: rotate(90deg);
   }
 `;
@@ -108,8 +108,8 @@ const ProfileImageContainer = styled.div`
   margin: 0 auto 1.5rem;
   border-radius: 50%;
   padding: 4px;
-  background: linear-gradient(135deg, #06b6d4, #ef4444);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #D9538F, #1E8A7D);
+  box-shadow: 0 10px 30px -10px rgba(90, 40, 70, 0.4);
   animation: ${popIn} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
   display: flex;
   align-items: center;
@@ -134,10 +134,9 @@ const AvatarFallback = styled.div`
   justify-content: center;
   font-size: 3.5rem;
   font-weight: 800;
-  color: #fff;
-  background: #0f172a;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #D9538F, #A83A6E);
   text-transform: uppercase;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 `;
 
 const getInitials = (name) => {
@@ -152,7 +151,7 @@ const getInitials = (name) => {
 const Title = styled.h2`
   font-size: 2.5rem;
   margin: 1rem 0 0.5rem;
-  background: linear-gradient(to right, #06b6d4 0%, #ef4444 100%);
+  background: linear-gradient(120deg, #D9538F 0%, #A83A6E 45%, #1E8A7D 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -166,7 +165,7 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.p`
-  color: #94a3b8;
+  color: #8A7684;
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
@@ -176,7 +175,7 @@ const Subtitle = styled.p`
 
 const EmployeeName = styled.h3`
   font-size: 1.75rem;
-  color: #f8fafc;
+  color: #2B2230;
   margin: 0.5rem 0 0.25rem;
   font-weight: 700;
   position: relative;
@@ -188,7 +187,7 @@ const EmployeeName = styled.h3`
 `;
 
 const DepartmentText = styled.p`
-  color: #06b6d4;
+  color: #1E8A7D;
   font-size: 1rem;
   font-weight: 600;
   margin: 0 0 1rem;
@@ -196,6 +195,37 @@ const DepartmentText = styled.p`
   letter-spacing: 2px;
   position: relative;
   z-index: 1;
+`;
+
+const NavRow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 1;
+`;
+
+const NavButton = styled.button`
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 79, 135, 0.3);
+  background: rgba(217, 83, 143, 0.06);
+  color: #A83A6E;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(217, 83, 143, 0.14);
+  }
+`;
+
+const PageCounter = styled.span`
+  color: #8A7684;
+  font-size: 0.95rem;
+  font-weight: 600;
 `;
 
 const ConfettiPiece = styled.div`
@@ -222,7 +252,7 @@ const BirthdayModal = ({ onClose, birthdayData }) => {
 
   useEffect(() => {
     // Generate confetti
-    const colors = ['#06b6d4', '#ef4444', '#14b8a6', '#f43f5e', '#0ea5e9'];
+    const colors = ['#D9538F', '#A83A6E', '#1E8A7D', '#2BB3A3', '#F2A9C8'];
     const newConfetti = Array.from({ length: 50 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -249,7 +279,7 @@ const BirthdayModal = ({ onClose, birthdayData }) => {
       ))}
       <ModalCard>
         <CloseButton onClick={onClose}>
-          <X size={20} color="#64748b" />
+          <X size={20} color="#A83A6E" />
         </CloseButton>
 
         <ProfileImageContainer>
@@ -265,45 +295,11 @@ const BirthdayModal = ({ onClose, birthdayData }) => {
         <Subtitle>Wishing you a fantastic day filled with joy and success!</Subtitle>
 
         {birthdays.length > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1.5rem', alignItems: 'center', position: 'relative', zIndex: 1 }}>
-            <button
-              onClick={handlePrev}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'white',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                transition: 'all 0.2s'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-              onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-            >
-              &lt;
-            </button>
-            <span style={{ color: '#94a3b8', fontSize: '0.95rem', fontWeight: 600 }}>
-              {currentIndex + 1} / {birthdays.length}
-            </span>
-            <button
-              onClick={handleNext}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'white',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                transition: 'all 0.2s'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-              onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-            >
-              &gt;
-            </button>
-          </div>
+          <NavRow>
+            <NavButton onClick={handlePrev}>&lt;</NavButton>
+            <PageCounter>{currentIndex + 1} / {birthdays.length}</PageCounter>
+            <NavButton onClick={handleNext}>&gt;</NavButton>
+          </NavRow>
         )}
 
       </ModalCard>

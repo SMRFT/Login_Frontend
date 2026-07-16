@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import styled, { keyframes } from "styled-components"
 import { validate } from "jsauth"
-import { User, Key, Eye, EyeOff } from "lucide-react"
-import ShinovaLogo from "./Images/Shinova.png"
-import bgImage from "./Images/cyber_bg.png"
+import Logo from "./Images/shanmuga-innovations-llp-pink.png"
+import Logo1 from "./Images/logo1.png"
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL
 
@@ -25,561 +24,543 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `
 
-// Main Layout Components
+const floaty = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-14px); }
+`
+
+// Layout
 const PageContainer = styled.div`
   min-height: 100vh;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #020617;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 2rem;
+  flex-wrap: wrap;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #2B2230;
+  animation: ${fadeIn} 0.6s ease both;
+`
+
+const BrandPanel = styled.div`
+  flex: 1 1 420px;
+  min-height: 100vh;
+  background: linear-gradient(155deg, #D9538F 0%, #A83A6E 55%, #1E8A7D 130%);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 5vw;
   box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
   position: relative;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-`
-
-const SplitContainer = styled.div`
-  display: flex;
-  width: 100%;
-  max-width: 1400px;
-  height: 85vh;
-  min-height: 600px; 
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(20px);
-  border-radius: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  
-  @media (max-width: 1024px) {
-    max-width: 95%;
-    height: 90vh;
-  }
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    height: auto;
+  @media (max-width: 900px) {
     min-height: auto;
-    max-width: 100%;
-    background: transparent;
-    box-shadow: none;
-    border: none;
-    backdrop-filter: none;
-    margin: 1rem 0;
+    padding: 40px 6vw 56px;
   }
 `
 
-const LeftPanel = styled.div`
-  flex: 1;
-  background-image: url(${bgImage});
-  background-size: cover;
-  background-position: center;
+const DecorCircleTop = styled.div`
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+`
+
+const DecorCircleBottom = styled.div`
+  position: absolute;
+  left: -80px;
+  bottom: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+`
+
+const FloatIcon = styled.div`
+  position: absolute;
+  pointer-events: none;
+  animation: ${floaty} ${props => props.duration || '8s'} ease-in-out infinite;
+  opacity: ${props => props.opacity || 0.5};
+  right: ${props => props.right};
+  left: ${props => props.left};
+  top: ${props => props.top};
+`
+
+const LogoBadge = styled.div`
+  align-self: flex-start;
   position: relative;
+  display: inline-block;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 10px 16px;
+
+  img {
+    height: 42px;
+    width: auto;
+    display: block;
+  }
+`
+
+const BrandContent = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  position: relative;
+  max-width: 440px;
+`
+
+const BrandTitle = styled.h1`
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.01em;
+`
+
+const BrandSubtext = styled.p`
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  opacity: 0.92;
+`
+
+const PointsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+`
+
+const PointRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const PointCheck = styled.div`
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  padding: 2rem;
-  overflow: hidden;
+  flex: none;
+`
 
-  /* Add an overlay for technical aesthetic */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(2, 6, 17, 0.6) 100%);
-    z-index: 1;
-  }
+const PointText = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+`
 
-  @media (max-width: 900px) {
-    display: none; /* Hide left panel on mobile devices */
-  }
+const BrandFooter = styled.div`
+  position: relative;
+  font-size: 12.5px;
+  opacity: 0.75;
+`
 
-  /* Additional decorative layers for tech pattern */
-  .decorative-line {
-    position: absolute;
-background: rgba(255, 255, 255, 0.1);
-z-index: 1;
-  }
-  
-  .line-bottom {
-  bottom: 20%;
-  left: 0;
+const FormPanel = styled.div`
+  flex: 1 1 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 5vw;
+  box-sizing: border-box;
+  background: #FFFFFF;
+`
+
+const FormWrapper = styled.div`
   width: 100%;
-  height: 1px;
-}
-  
-  .line-left {
-  top: 0;
-  left: 20%;
-  width: 1px;
-  height: 100%;
-}
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 `
 
-const LeftContent = styled.div`
-position: relative;
-z-index: 2;
-text-align: center;
-max-width: 500px;
+const FormBrandRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 8px;
+
+  img {
+    height: 72px;
+    width: auto;
+    display: block;
+  }
 `
 
-const WelcomeText = styled.h1`
-font-size: 2rem;
-font-weight: 600;
-margin-bottom: 0.5rem;
-line-height: 1.3;
-color: #ffcccc;
+const FormBrandName = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  color: #2B2230;
+  letter-spacing: 0.02em;
 `
 
-const WelcomeSubText = styled.p`
-font-size: 1.25rem;
-font-weight: 400;
-color: rgba(255, 255, 255, 0.8);
-margin-bottom: 3rem;
-`
-
-const HeroImagePlaceholder = styled.div`
-width: 280px;
-height: 280px;
-background: rgba(0, 0, 0, 0.3);
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-margin: 0 auto;
-box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
-position: relative;
-  
-  &::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-}
-`
-
-const HeroImage = styled.img`
-max-width: 70%;
-height: auto;
-filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
-`
-
-const RightPanel = styled.div`
-flex: 1;
-background: #0f172a;
-background-image: radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.1) 0%, transparent 50%);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-padding: 2rem;
-position: relative;
-
-@media (max-width: 600px) {
-  padding: 1.5rem;
-}
-`
-
-const RightHeader = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
+const FormHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 2;
-
-  @media (max-width: 1024px) {
-    margin-bottom: 1.5rem;
-  }
+  gap: 6px;
+  text-align: center;
 `
 
-const RightLogo = styled.img`
-height: 100px;
-margin-bottom: 1rem;
-filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.2));
+const FormTitle = styled.div`
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 `
 
-const CompanyTitle = styled.h2`
-font-size: 1.5rem;
-font-weight: 800;
-color: #f8fafc;
-margin: 0;
-letter-spacing: 1.5px;
-text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-`
-
-const LoginCardWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  max-width: 440px;
-  animation: ${fadeIn} 0.5s ease-out;
-  border-radius: 16px;
-  z-index: 2;
-  
-  /* Cyberpunk glows behind the card */
-  &::before {
-    content: '';
-    position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.8) 0%, transparent 40%, transparent 60%, rgba(6, 182, 212, 0.8) 100%);
-    z-index: -1;
-    border-radius: 18px;
-    filter: blur(8px);
-    opacity: 0.7;
-  }
-
-  @media (max-width: 900px) {
-    &::before {
-      display: none; /* Remove glow on mobile */
-    }
-  }
-`
-
-const LoginCard = styled.div`
-background: rgba(30, 41, 59, 0.5);
-backdrop-filter: blur(10px);
-border-radius: 24px;
-padding: 3rem;
-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-border: 1px solid rgba(255, 255, 255, 0.05);
-
-@media (max-width: 1024px) {
-  padding: 2rem;
-}
-
-@media (max-width: 600px) {
-  padding: 2rem 1.5rem;
-}
-`
-
-const FormTitle = styled.h3`
-font-size: 1.25rem;
-font-weight: 700;
-color: #f1f5f9;
-margin: 0 0 1.5rem 0;
-text-align: center;
-letter-spacing: 0.5px;
-@media (max-width: 1024px) {
-  margin-bottom: 1rem;
-}
+const FormSubtitle = styled.div`
+  font-size: 14px;
+  color: #8A7684;
 `
 
 const Form = styled.form`
-display: flex;
-flex-direction: column;
-gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 `
 
-const InputGroupWrapper = styled.div`
-position: relative;
-display: flex;
-align-items: center;
+const FieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 `
 
-const IconWrapper = styled.div`
-position: absolute;
-left: 1.25rem;
-color: #06b6d4;
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 10;
+const FieldLabelRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const FieldLabel = styled.label`
+  font-size: 13px;
+  font-weight: 600;
+  color: #5C4B57;
+`
+
+const InlineLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: #C94F87;
+  font-weight: 600;
+
+  &:hover {
+    color: #A83A6E;
+  }
 `
 
 const Input = styled.input`
-width: 100%;
-padding: 0.875rem 1rem 0.875rem 3.5rem;
-border: 1px solid rgba(255, 255, 255, 0.1); 
-border-radius: 12px; 
-font-size: 1rem;
-color: #f8fafc;
-background: rgba(15, 23, 42, 0.6); 
-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-box-sizing: border-box;
-
-  &:focus {
-  outline: none;
-  border-color: #06b6d4;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
-}
+  border: 1.5px solid #EBDDE5;
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  color: #2B2230;
+  background: #FFFDFE;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 
   &::placeholder {
-  color: #94a3b8;
-  font-weight: 400;
-}
+    color: #BFAFB9;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #D9538F;
+    box-shadow: 0 0 0 3px rgba(217, 83, 143, 0.12);
+  }
 
   &:disabled {
-  background: rgba(248, 250, 252, 0.5);
-  cursor: not-allowed;
-}
+    background: #F6EFF3;
+    cursor: not-allowed;
+  }
+`
+
+const PasswordWrapper = styled.div`
+  position: relative;
+  display: flex;
+`
+
+const PasswordInput = styled(Input)`
+  padding-right: 60px;
 `
 
 const PasswordToggle = styled.button`
-position: absolute;
-right: 1rem;
-background: none;
-border: none;
-color: #0f766e;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 0;
-transition: color 0.2s;
-
-  &:hover {
-  color: #115e59;
-}
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px;
+  color: #A83A6E;
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
 `
 
-const ForgotPasswordContainer = styled.div`
-display: flex;
-justify-content: flex-end;
-margin-top: -0.25rem;
-margin-bottom: 0.5rem;
-`
+const RememberLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: #5C4B57;
+  cursor: pointer;
+  font-weight: 500;
 
-const ForgotPasswordLink = styled.button`
-background: none;
-border: none;
-color: #06b6d4;
-font-size: 0.875rem;
-font-weight: 500;
-cursor: pointer;
-padding: 0;
-transition: all 0.2s;
-
-  &:hover {
-  color: #22d3ee;
-  text-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
-}
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: #D9538F;
+  }
 `
 
 const SubmitButton = styled.button`
-width: 100%;
-padding: 1.125rem;
-background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-color: white;
-border: none;
-border-radius: 12px;
-font-size: 1rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 1px;
-cursor: pointer;
-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
-
-  @media (max-width: 480px) {
-    padding: 0.875rem;
-    font-size: 0.9rem;
-  }
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  background: linear-gradient(135deg, #D9538F, #A83A6E);
+  color: #FFFFFF;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 26px -10px rgba(201, 79, 135, 0.6);
+  transition: transform 0.15s ease, filter 0.15s ease;
 
   &:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 25px -5px rgba(239, 68, 68, 0.4);
-  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-}
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
 
   &:active:not(:disabled) {
-  transform: translateY(0);
-}
+    transform: translateY(1px);
+  }
 
   &:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`
+
+const SecurityNote = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  color: #8A7684;
+  font-size: 12.5px;
+`
+
+const HelperText = styled.div`
+  text-align: center;
+  font-size: 13.5px;
+  color: #8A7684;
+
+  a {
+    color: #C94F87;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #A83A6E;
+  }
+`
+
+const BackHomeLink = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  align-self: center;
+  background: rgba(217, 83, 143, 0.08);
+  border: 1.5px solid rgba(201, 79, 135, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #A83A6E;
+  padding: 10px 22px;
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    background: rgba(217, 83, 143, 0.16);
+    transform: translateY(-1px);
+  }
 `
 
 const ErrorMessage = styled.div`
-background: #fef2f2;
-border: 1px solid #fecaca;
-color: #dc2626;
-padding: 0.75rem 1rem;
-border-radius: 6px;
-font-size: 0.875rem;
-margin-bottom: 1.5rem;
-display: flex;
-align-items: center;
-gap: 0.5rem;
-animation: ${fadeIn} 0.3s ease;
+  background: #FDF0F4;
+  border: 1px solid #F3C9DA;
+  color: #A83A6E;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: ${fadeIn} 0.3s ease;
 
   &::before {
-  content: '⚠️';
-}
+    content: '⚠️';
+  }
 `
 
 const SuccessMessage = styled.div`
-background: #f0fdf4;
-border: 1px solid #bbf7d0;
-color: #16a34a;
-padding: 0.75rem 1rem;
-border-radius: 6px;
-font-size: 0.875rem;
-margin-bottom: 1.5rem;
-display: flex;
-align-items: center;
-gap: 0.5rem;
-animation: ${fadeIn} 0.3s ease;
+  background: #EAF7F4;
+  border: 1px solid #BEE6DB;
+  color: #1E8A7D;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: ${fadeIn} 0.3s ease;
 
   &::before {
-  content: '✅';
-}
+    content: '✅';
+  }
 `
 
 const LoadingSpinner = styled.div`
-display: inline-block;
-width: 16px;
-height: 16px;
-border: 2px solid rgba(255, 255, 255, 0.3);
-border-top: 2px solid white;
-border-radius: 50%;
-animation: ${spin} 1s linear infinite;
-margin-right: 0.5rem;
-vertical-align: middle;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: ${spin} 1s linear infinite;
+  margin-right: 0.5rem;
+  vertical-align: middle;
 `
 
-// Modal Components
+// Modal
 const Modal = styled.div`
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background: rgba(2, 6, 17, 0.9);
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 1000;
-backdrop-filter: blur(12px);
-padding: 2rem 1rem;
-overflow-y: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(43, 34, 48, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  padding: 2rem 1rem;
+  overflow-y: auto;
 `
 
 const ModalContent = styled.div`
-background: rgba(15, 23, 42, 0.95);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 24px;
-padding: 2.5rem;
-width: 100%;
-max-width: 440px;
-max-height: 90vh;
-overflow-y: auto;
-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-animation: ${slideIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-position: relative;
+  background: #FFFFFF;
+  border: 1px solid #EBDDE5;
+  border-radius: 24px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(90, 40, 70, 0.35);
+  animation: ${slideIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 
   @media (max-width: 480px) {
     padding: 1.5rem;
     border-radius: 16px;
   }
-
-/* Custom Scrollbar */
-&::-webkit-scrollbar {
-  width: 6px;
-}
-&::-webkit-scrollbar-track {
-  background: transparent;
-}
-&::-webkit-scrollbar-thumb {
-  background: rgba(6, 182, 212, 0.2);
-  border-radius: 10px;
-}
 `
 
 const ModalHeader = styled.h3`
-font-size: 1.5rem;
-font-weight: 800;
-margin: 0 0 1rem 0;
-text-align: center;
-color: #f8fafc;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  color: #2B2230;
 `
 
 const ModalText = styled.p`
-color: #94a3b8;
-margin-bottom: 2rem;
-line-height: 1.6;
-text-align: center;
-font-size: 1rem;
+  color: #8A7684;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  text-align: center;
+  font-size: 1rem;
 `
 
-const ModalInput = styled.input`
-width: 100%;
-padding: 1rem;
-background: rgba(15, 23, 42, 0.5);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 12px;
-font-size: 1rem;
-color: #f8fafc;
-margin-bottom: 2rem;
-box-sizing: border-box;
-transition: all 0.3s;
-
-  &:focus {
-  outline: none;
-  border-color: #06b6d4;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
-}
+const ModalInput = styled(Input)`
+  margin-bottom: 2rem;
 `
 
 const ModalButtons = styled.div`
-display: flex;
-gap: 0.75rem;
+  display: flex;
+  gap: 0.75rem;
 `
 
 const ModalButton = styled.button`
-flex: 1;
-padding: 0.875rem 1rem;
-border: none;
-border-radius: 6px;
-font-weight: 600;
-font-size: 0.95rem;
-cursor: pointer;
-transition: all 0.2s ease;
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
-  ${props => props.primary ? `
-    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  ${props => props.$primary ? `
+    background: linear-gradient(135deg, #D9538F, #A83A6E);
     color: white;
-    
+
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
-      box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+      filter: brightness(1.06);
     }
   ` : `
-    background: rgba(255, 255, 255, 0.05);
-    color: #94a3b8;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    
+    background: #F6EFF3;
+    color: #5C4B57;
+    border: 1px solid #EBDDE5;
+
     &:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
+      background: #EEDFE7;
     }
   `}
 
   &:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `
+
+const CheckIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 13 13">
+    <path d="M2 7 L5 10 L11 3" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+const ShieldIcon = () => (
+  <svg width="13" height="15" viewBox="0 0 13 15">
+    <path d="M6.5 1 L12 3.2 V7.5 C12 11 9.8 13.2 6.5 14.2 C3.2 13.2 1 11 1 7.5 V3.2 Z" fill="none" stroke="#1E8A7D" strokeWidth="1.4" strokeLinejoin="round" />
+    <path d="M4.2 7.6 L6 9.4 L9 5.8" fill="none" stroke="#1E8A7D" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+const points = [
+  'HIPAA-grade secure architecture',
+  'Role-based access for every team',
+  'Multi-hospital, cloud-ready platform',
+]
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -636,16 +617,7 @@ const Login = () => {
 
       // Use direct jsauth validation
       const user = validate(access_token)
-      // Call allowedActions once to ensure it's logged or processed if needed
-      // (jsauth.validate already calls .process() which decrypts actions)
-
       const allowedData = user.allowedData()
-      console.log(allowedData, "allowedData")
-      // user.process()
-      console.log("user", user)
-      const allowedModules = user.allowedModules()
-      console.log(allowedModules, "allowedModules")
-
 
       localStorage.setItem("user_name", user.name())
       localStorage.setItem("user_email", user.email())
@@ -655,9 +627,7 @@ const Login = () => {
 
       localStorage.setItem("hospital_code", res.data.user.hospitalCode)
 
-
       localStorage.setItem("allowed_data", JSON.stringify(allowedData))
-      // localStorage.setItem("allowed_modules", JSON.stringify(allowedModules))
       localStorage.setItem("user_payload", JSON.stringify(res.data.user))
 
       if (allowedData?.length === 1) {
@@ -725,134 +695,167 @@ const Login = () => {
 
   return (
     <PageContainer>
-      <SplitContainer>
-        {/* Left Panel */}
-        <LeftPanel>
-          <div className="decorative-line line-bottom"></div>
-          <div className="decorative-line line-left"></div>
+      {/* Brand Panel */}
+      <BrandPanel>
+        <DecorCircleTop />
+        <DecorCircleBottom />
+        <FloatIcon right="8%" top="12%" duration="8s" opacity={0.5} aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 44 44">
+            <rect x="17" y="6" width="10" height="32" rx="4" fill="#FFFFFF" />
+            <rect x="6" y="17" width="32" height="10" rx="4" fill="#FFFFFF" />
+          </svg>
+        </FloatIcon>
+        <FloatIcon left="12%" top="22%" duration="10s" opacity={0.45} aria-hidden="true">
+          <svg width="52" height="30" viewBox="0 0 52 30">
+            <path d="M2 15 h12 l4-9 6 18 5-12 3 3 h18" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </FloatIcon>
 
-          <LeftContent>
-            <WelcomeText>Innovating for a Smarter Future.</WelcomeText>
-            <WelcomeSubText>Welcome to Shanmuga Innovations.</WelcomeSubText>
+        <LogoBadge onClick={() => navigate(`${import.meta.env.BASE_URL}`)} style={{ cursor: 'pointer' }}>
+          <img src={Logo} alt="Shanmuga Innovations LLP" />
+        </LogoBadge>
 
-            <HeroImagePlaceholder>
-              <HeroImage src={ShinovaLogo} alt="Shanmuga Innovations Target" />
-            </HeroImagePlaceholder>
-          </LeftContent>
-        </LeftPanel>
+        <BrandContent>
+          <BrandTitle>Secure Healthcare Portal</BrandTitle>
+          <BrandSubtext>One sign-in for hospitals, pharmacies, laboratories, ambulance services, and home care teams.</BrandSubtext>
+          <PointsList>
+            {points.map((p) => (
+              <PointRow key={p}>
+                <PointCheck><CheckIcon /></PointCheck>
+                <PointText>{p}</PointText>
+              </PointRow>
+            ))}
+          </PointsList>
+        </BrandContent>
 
-        {/* Right Panel */}
-        <RightPanel>
-          <RightHeader>
-            <RightLogo src={ShinovaLogo} alt="Logo" />
-            <CompanyTitle>SHANMUGA INNOVATIONS</CompanyTitle>
-          </RightHeader>
+        <BrandFooter>&copy; 2025 SHANMUGA INNOVATIONS LLP. All Rights Reserved.</BrandFooter>
+      </BrandPanel>
 
-          <LoginCardWrapper>
-            <LoginCard>
-              <FormTitle>Employee Secure Login</FormTitle>
+      {/* Form Panel */}
+      <FormPanel>
+        <FormWrapper>
+          <FormBrandRow>
+            <img src={Logo1} alt="Shanmuga Innovations LLP" />
+            <FormBrandName>Shanmuga Innovations LLP</FormBrandName>
+          </FormBrandRow>
 
-              {error && <ErrorMessage>{error}</ErrorMessage>}
-              {success && <SuccessMessage>{success}</SuccessMessage>}
+          <FormHeader>
+            <FormTitle>Login</FormTitle>
+            <FormSubtitle>Access your healthcare workspace</FormSubtitle>
+          </FormHeader>
 
-              <Form onSubmit={handleSubmit}>
-                <InputGroupWrapper>
-                  <IconWrapper><User size={20} /></IconWrapper>
-                  <Input
-                    type="text"
-                    name="employeeId"
-                    placeholder="Employee ID"
-                    value={formData.employeeId}
-                    onChange={handleChange}
-                    disabled={isSubmitting}
-                    autoComplete="username"
-                  />
-                </InputGroupWrapper>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {success && <SuccessMessage>{success}</SuccessMessage>}
 
-                <InputGroupWrapper>
-                  <IconWrapper><Key size={20} /></IconWrapper>
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    disabled={isSubmitting}
-                    autoComplete="current-password"
-                  />
-                  <PasswordToggle
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </PasswordToggle>
-                </InputGroupWrapper>
+          <Form onSubmit={handleSubmit}>
+            <FieldGroup>
+              <FieldLabel htmlFor="hc-user">Employee ID</FieldLabel>
+              <Input
+                id="hc-user"
+                type="text"
+                name="employeeId"
+                placeholder="Enter your Employee ID"
+                value={formData.employeeId}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                autoComplete="username"
+              />
+            </FieldGroup>
 
-                <ForgotPasswordContainer>
-                  <ForgotPasswordLink type="button" onClick={handleForgotPassword}>
-                    Forgot password?
-                  </ForgotPasswordLink>
-                </ForgotPasswordContainer>
+            <FieldGroup>
+              <FieldLabelRow>
+                <FieldLabel htmlFor="hc-pass">Password</FieldLabel>
+                <InlineLink type="button" onClick={handleForgotPassword}>Forgot password?</InlineLink>
+              </FieldLabelRow>
+              <PasswordWrapper>
+                <PasswordInput
+                  id="hc-pass"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  autoComplete="current-password"
+                />
+                <PasswordToggle
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? "HIDE" : "SHOW"}
+                </PasswordToggle>
+              </PasswordWrapper>
+            </FieldGroup>
 
-                <SubmitButton type="submit" disabled={isSubmitting}>
-                  {isSubmitting && <LoadingSpinner />}
-                  {isSubmitting ? 'SIGNING IN...' : 'SIGN IN'}
-                </SubmitButton>
-              </Form>
-            </LoginCard>
-          </LoginCardWrapper>
-        </RightPanel>
 
-        {/* Forgot Password Modal */}
-        {showForgotModal && (
-          <Modal onClick={(e) => e.target === e.currentTarget && handleCloseForgotModal()}>
-            <ModalContent>
-              <ModalHeader>Reset Password</ModalHeader>
 
-              {success ? (
-                <>
-                  <SuccessMessage>{success}</SuccessMessage>
-                  <ModalText>Please check your email for the password reset link.</ModalText>
-                </>
-              ) : (
-                <>
-                  <ModalText>
-                    Enter your Employee ID and we'll send you a link to reset your password.
-                  </ModalText>
+            <SubmitButton type="submit" disabled={isSubmitting}>
+              {isSubmitting && <LoadingSpinner />}
+              {isSubmitting ? 'Signing in...' : 'Login'}
+            </SubmitButton>
 
-                  {error && <ErrorMessage>{error}</ErrorMessage>}
+            <SecurityNote>
+              <ShieldIcon />
+              Protected with 256-bit encryption &middot; Role-based access
+            </SecurityNote>
 
-                  <ModalInput
-                    type="text"
-                    value={forgotPasswordEmployeeId}
-                    onChange={(e) => setForgotPasswordEmployeeId(e.target.value)}
-                    placeholder="Employee ID"
-                    disabled={isLoading}
-                    autoComplete="username"
-                  />
-                </>
-              )}
+            <HelperText>New to the platform? <a href="mailto:support@shinova.in">Contact us</a></HelperText>
+            <BackHomeLink type="button" onClick={() => navigate(`${import.meta.env.BASE_URL}`)}>
+              &larr; Back to home
+            </BackHomeLink>
+          </Form>
+        </FormWrapper>
+      </FormPanel>
 
-              <ModalButtons>
-                <ModalButton onClick={handleCloseForgotModal} disabled={isLoading}>
-                  Cancel
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <Modal onClick={(e) => e.target === e.currentTarget && handleCloseForgotModal()}>
+          <ModalContent>
+            <ModalHeader>Reset Password</ModalHeader>
+
+            {success ? (
+              <>
+                <SuccessMessage>{success}</SuccessMessage>
+                <ModalText>Please check your email for the password reset link.</ModalText>
+              </>
+            ) : (
+              <>
+                <ModalText>
+                  Enter your Employee ID and we'll send you a link to reset your password.
+                </ModalText>
+
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+
+                <ModalInput
+                  type="text"
+                  value={forgotPasswordEmployeeId}
+                  onChange={(e) => setForgotPasswordEmployeeId(e.target.value)}
+                  placeholder="Employee ID"
+                  disabled={isLoading}
+                  autoComplete="username"
+                />
+              </>
+            )}
+
+            <ModalButtons>
+              <ModalButton onClick={handleCloseForgotModal} disabled={isLoading}>
+                Cancel
+              </ModalButton>
+              {!success && (
+                <ModalButton
+                  $primary
+                  onClick={handleForgotPasswordSubmit}
+                  disabled={isLoading}
+                >
+                  {isLoading && <LoadingSpinner />}
+                  {isLoading ? 'Sending...' : 'Send Reset Link'}
                 </ModalButton>
-                {!success && (
-                  <ModalButton
-                    primary
-                    onClick={handleForgotPasswordSubmit}
-                    disabled={isLoading}
-                  >
-                    {isLoading && <LoadingSpinner />}
-                    {isLoading ? 'Sending...' : 'Send Reset Link'}
-                  </ModalButton>
-                )}
-              </ModalButtons>
-            </ModalContent>
-          </Modal>
-        )}
-      </SplitContainer>
+              )}
+            </ModalButtons>
+          </ModalContent>
+        </Modal>
+      )}
     </PageContainer>
   )
 }
