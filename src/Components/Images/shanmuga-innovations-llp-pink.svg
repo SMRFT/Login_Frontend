@@ -1,0 +1,35 @@
+<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ribbonGrad" gradientUnits="userSpaceOnUse" x1="143.1" y1="497.2" x2="1049.8" y2="576.7">
+      <stop offset="0" stop-color="#C2437A"></stop>
+      <stop offset="1" stop-color="#F7C4DD"></stop>
+    </linearGradient>
+    <linearGradient id="hookGrad" gradientUnits="userSpaceOnUse" x1="52.1" y1="701.3" x2="438.1" y2="698.1">
+      <stop offset="0" stop-color="#F2A9C8"></stop>
+      <stop offset="1" stop-color="#FFFFFF"></stop>
+    </linearGradient>
+    <linearGradient id="tailGrad" gradientUnits="userSpaceOnUse" x1="978.7" y1="260.1" x2="395.8" y2="267.4">
+      <stop offset="0" stop-color="#EFA0C2"></stop>
+      <stop offset="1" stop-color="#FFFFFF"></stop>
+    </linearGradient>
+    <linearGradient id="nameGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C2437A"></stop>
+      <stop offset="1" stop-color="#E8739F"></stop>
+    </linearGradient>
+  </defs>
+
+  
+  <g transform="translate(18,20) scale(1.24)">
+    <g transform="translate(0.000000,114.000000) scale(0.100000,-0.100000)" stroke-linejoin="round">
+      <path d="M245 836 c-55 -25 -119 -90 -141 -142 -8 -18 -14 -60 -14 -92 0 -53 2 -60 27 -73 39 -21 184 -19 206 3 11 10 13 19 7 23 -5 3 -10 24 -10 45 0 32 7 47 43 83 47 50 103 82 162 93 39 7 39 7 16 25 -72 59 -211 75 -296 35z" fill="url(#hookGrad)" stroke="#F1D6E4" stroke-width="5"></path>
+      <path d="M823 495 c-22 -9 -33 -21 -33 -35 0 -28 -123 -148 -200 -195 -34 -21 -102 -52 -152 -70 -90 -32 -90 -32 -41 -66 26 -19 76 -52 110 -73 63 -39 63 -39 180 40 126 83 288 234 299 279 8 34 -25 111 -54 124 -31 15 -70 13 -109 -4z" fill="url(#tailGrad)" stroke="#F1D6E4" stroke-width="5"></path>
+      <path d="M772 806 c-70 -27 -173 -91 -272 -171 -66 -54 -138 -95 -164 -95 -8 0 -16 -6 -19 -12 -6 -19 -178 -18 -201 1 -24 20 -29 9 -16 -40 27 -100 114 -219 175 -239 69 -23 233 43 410 164 94 65 159 96 200 96 33 0 72 -19 78 -39 3 -9 12 -33 20 -54 14 -38 14 -38 43 25 61 135 38 292 -54 353 -57 37 -121 41 -200 11z" fill="url(#ribbonGrad)" stroke="none"></path>
+      <path d="M508 1094 c-55 -29 -75 -117 -41 -174 59 -100 215 -66 230 50 14 103 -95 175 -189 124z" fill="#E8739F" stroke="none"></path>
+    </g>
+  </g>
+
+  
+  <text x="200" y="105" font-family="Arial, Liberation Sans, sans-serif" font-size="46" font-weight="700" fill="url(#nameGrad)" letter-spacing="1">SHANMUGA</text>
+  <text x="200" y="138" font-family="Arial, Liberation Sans, sans-serif" font-size="26" font-weight="500" fill="#E8739F" letter-spacing="3">INNOVATIONS LLP</text>
+  <text x="200" y="162" font-family="Arial, Liberation Sans, sans-serif" font-size="15" font-weight="400" fill="#AAAAAA" letter-spacing="6">IT COMPANY</text>
+</svg>

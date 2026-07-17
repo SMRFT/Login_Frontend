@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes, createGlobalStyle, css } from "styled-components";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import styled, { keyframes, createGlobalStyle, css, useTheme } from "styled-components";
 import { toast } from "react-toastify";
 import {
   BarChart,
@@ -23,27 +23,27 @@ import {
 const GlobalTheme = createGlobalStyle`
   :root {
     /* Professional Corporate Theme (Indigo & Slate) */
-    --bg-body: #f8fafc; /* Slate 50 - Clean Light Background */
-    --card-bg: #ffffff; /* Solid White Cards */
-    --glass-border: 1px solid #e2e8f0; /* Subtle Slate Border */
+    --bg-body: ${({ theme }) => theme.bgBase};
+    --card-bg: ${({ theme }) => theme.bgCard};
+    --glass-border: 1px solid ${({ theme }) => theme.borderLight};
     --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    
-    --text-dark: #0f172a; /* Slate 900 - Deep & Readable */
-    --text-muted: #64748b; /* Slate 500 - Professional Grey */
-    
+
+    --text-dark: ${({ theme }) => theme.textPrimary};
+    --text-muted: ${({ theme }) => theme.textSecondary};
+
     /* Brand Colors */
     --primary: #4f46e5;    /* Indigo 600 - Trustworthy & Modern */
     --primary-light: #818cf8; /* Indigo 400 */
     --accent: #6366f1;     /* Indigo 500 */
     --secondary: #3b82f6;  /* Blue 500 */
-    
+
     /* Semantic Colors */
-    --success: #10b981;    /* Emerald 500 */
-    --warning: #f59e0b;    /* Amber 500 */
-    --danger: #ef4444;     /* Red 500 */
+    --success: ${({ theme }) => theme.success};
+    --warning: ${({ theme }) => theme.warning};
+    --danger: ${({ theme }) => theme.danger};
     --purple: #8b5cf6;     /* Violet 500 */
-    
-    --chart-grid: rgba(0, 0, 0, 0.06);
+
+    --chart-grid: ${({ theme }) => theme.chartGrid};
   }
 
   body {
@@ -54,20 +54,20 @@ const GlobalTheme = createGlobalStyle`
     color: var(--text-dark);
     -webkit-font-smoothing: antialiased;
   }
-  
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent; 
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* Slate 300 */
+    background: ${({ theme }) => theme.scrollbarThumb};
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8; /* Slate 400 */
+    background: ${({ theme }) => theme.scrollbarThumbHover};
   }
 `;
 
@@ -112,7 +112,7 @@ const MainContent = styled.main`
     width: 6px;
   }
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: ${({ theme }) => theme.scrollbarThumb};
     border-radius: 3px;
   }
 
@@ -135,7 +135,7 @@ const HeaderBar = styled.header`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #ffffff;
+    background: ${({ theme }) => theme.bgCard};
     border-color: var(--primary);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
@@ -182,7 +182,7 @@ const LogoutBtn = styled.button`
   
   &:hover {
     background: var(--primary);
-    color: #ffffff;
+    color: #fff;
     border-color: var(--primary);
     transform: translateY(-1px);
   }
@@ -273,7 +273,7 @@ const Divider = styled.span`
 
 const SearchButton = styled.button`
   background: var(--primary);
-  color: #ffffff; /* White Text */
+  color: #fff;
   border: none;
   padding: 0.6rem 1.5rem;
   border-radius: 10px;
@@ -330,7 +330,7 @@ const GlassCard = styled.div`
   
   &:hover {
     transform: translateY(-5px);
-    background: #ffffff;
+    background: ${({ theme }) => theme.bgCard};
     border-color: var(--primary-light);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
@@ -417,9 +417,9 @@ const ListItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem;
-  background: #ffffff;
+  background: ${({ theme }) => theme.bgCard};
   border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid ${({ theme }) => theme.borderLight};
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   
@@ -472,7 +472,9 @@ const FINANCIAL_COLORS = {
 
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 const MDashboard = () => {
+  const theme = useTheme();
   const [data, setData] = useState(null);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -496,7 +498,7 @@ const MDashboard = () => {
     }
   }, [fromDate, toDate]);
 
-  const fetchData = async (start, end) => {
+  const fetchData = useCallback(async (start, end) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("access_token");
@@ -521,17 +523,17 @@ const MDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [securityBaseUrl]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     fetchData(fromDate, toDate);
-  };
+  }, [fetchData, fromDate, toDate]);
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = useCallback((amount) => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount || 0);
-  };
+  }, []);
 
-  const getSegmentLabel = (key) => {
+  const getSegmentLabel = useCallback((key) => {
     const labels = {
       home_collection: 'Home Collection',
       b2b: 'B2B / Clients',
@@ -543,9 +545,9 @@ const MDashboard = () => {
       other: 'Other'
     };
     return labels[key] || key.replace(/_/g, ' ').toUpperCase();
-  };
+  }, []);
 
-  const prepareSegmentData = () => {
+  const segmentData = useMemo(() => {
     if (!data) return [];
     const segments = data.samples.segments;
     return Object.keys(segments).map((key, index) => ({
@@ -553,9 +555,9 @@ const MDashboard = () => {
       value: segments[key],
       fill: COLORS[index % COLORS.length]
     })).filter(item => item.value > 0);
-  };
+  }, [data, getSegmentLabel]);
 
-  const prepareRevenueData = () => {
+  const revenueData = useMemo(() => {
     if (!data) return [];
     const gross = data.financials.gross;
     return Object.keys(gross).map((key, index) => ({
@@ -563,9 +565,9 @@ const MDashboard = () => {
       value: gross[key],
       fill: COLORS[index % COLORS.length]
     })).filter(item => item.value > 0);
-  };
+  }, [data, getSegmentLabel]);
 
-  const prepareHybridData = () => {
+  const hybridData = useMemo(() => {
     if (!data) return [];
 
     // Explicitly define ALL segments we want to show, regardless of data
@@ -581,9 +583,6 @@ const MDashboard = () => {
     ];
 
     return allKeys.map((key) => {
-      // Find matching key in backend response (sometimes inconsistent naming)
-      // We map our 'rawKey' (e.g. franchise_share) to the backend key if needed or use direct
-
       let count = 0;
       let revenue = 0;
 
@@ -605,11 +604,7 @@ const MDashboard = () => {
         fill: FINANCIAL_COLORS[key] || '#9ca3af'
       };
     }).sort((a, b) => b.revenue - a.revenue);
-  };
-
-  const segmentData = prepareSegmentData();
-  const revenueData = prepareRevenueData();
-  const hybridData = prepareHybridData();
+  }, [data, getSegmentLabel]);
 
   const navigate = useNavigate();
 
@@ -630,10 +625,13 @@ const MDashboard = () => {
           <span>Shanmuga Metrics</span>
         </LogoArea>
 
-        <LogoutBtn onClick={handleLogout}>
-          <i className="bi bi-box-arrow-right"></i>
-          Home
-        </LogoutBtn>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <ThemeToggle />
+          <LogoutBtn onClick={handleLogout}>
+            <i className="bi bi-box-arrow-right"></i>
+            Home
+          </LogoutBtn>
+        </div>
       </HeaderBar>
 
       <TopBar>
@@ -716,7 +714,7 @@ const MDashboard = () => {
                         {/* Male Bar */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <i className="bi bi-gender-male" style={{ color: '#3f5efb' }}></i>
-                          <div style={{ flex: 1, background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ flex: 1, background: 'var(--chart-grid)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
                             <div style={{
                               width: `${(data.employee_stats.male / (data.employee_stats.total_employees || 1)) * 100}%`,
                               background: '#3f5efb',
@@ -729,7 +727,7 @@ const MDashboard = () => {
                         {/* Female Bar */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <i className="bi bi-gender-female" style={{ color: '#ec4899' }}></i>
-                          <div style={{ flex: 1, background: '#e2e8f0', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ flex: 1, background: 'var(--chart-grid)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
                             <div style={{
                               width: `${(data.employee_stats.female / (data.employee_stats.total_employees || 1)) * 100}%`,
                               background: '#ec4899',
@@ -753,7 +751,7 @@ const MDashboard = () => {
                             <Pie
                               data={[
                                 { value: data.employee_stats.attendance_today, fill: 'var(--success)' },
-                                { value: (data.employee_stats.total_employees - data.employee_stats.attendance_today), fill: 'rgba(255,255,255,0.1)' }
+                                { value: (data.employee_stats.total_employees - data.employee_stats.attendance_today), fill: theme.chartTrack }
                               ]}
                               cx="50%"
                               cy="50%"
@@ -788,7 +786,7 @@ const MDashboard = () => {
             {/* --- 3. Departmental Performance Grid --- */}
             <ChartTitle style={{ marginTop: '3rem' }}>Departmental Performance</ChartTitle>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
-              {prepareHybridData().map((item, index) => {
+              {hybridData.map((item, index) => {
                 // Calculate contribution percentage for the mini-chart
                 const totalRev = Object.values(data.financials.gross).reduce((a, b) => a + b, 0) || 1;
                 const percentage = (item.revenue / totalRev) * 100;
@@ -830,7 +828,7 @@ const MDashboard = () => {
                             <Pie
                               data={[
                                 { value: item.revenue, fill: item.fill },
-                                { value: totalRev - item.revenue, fill: 'rgba(255,255,255,0.05)' }
+                                { value: totalRev - item.revenue, fill: theme.chartTrack }
                               ]}
                               cx="50%"
                               cy="50%"
@@ -849,7 +847,7 @@ const MDashboard = () => {
                           <span>Samples</span>
                           <span style={{ fontWeight: '700', color: 'var(--text-dark)' }}>{item.count}</span>
                         </div>
-                        <div style={{ width: '100%', background: 'rgba(255,255,255,0.05)', height: '4px', borderRadius: '2px' }}>
+                        <div style={{ width: '100%', background: 'var(--chart-grid)', height: '4px', borderRadius: '2px' }}>
                           <div style={{ width: `${(item.count / (data.samples.total || 1)) * 100}%`, background: item.fill, height: '100%', borderRadius: '2px' }}></div>
                         </div>
                       </div>
@@ -882,7 +880,7 @@ const MDashboard = () => {
                       </Pie>
                       <Tooltip
                         formatter={(value) => formatCurrency(value)}
-                        contentStyle={{ background: 'rgba(255, 255, 255, 0.95)', border: 'none', borderRadius: '16px', color: 'var(--text-dark)', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)' }}
+                        contentStyle={{ background: theme.tooltipBg, border: 'none', borderRadius: '16px', color: 'var(--text-dark)', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)' }}
                       />
                       <Legend
                         verticalAlign="bottom"
@@ -899,21 +897,21 @@ const MDashboard = () => {
                 <ChartTitle>Financial Summary</ChartTitle>
                 <div style={{ overflowX: 'auto' }}>
                   <List>
-                    <ListItem style={{ background: '#ecfdf5', border: 'none', borderLeft: '4px solid var(--success)', boxShadow: 'none' }}>
+                    <ListItem style={{ background: theme.successBg, border: 'none', borderLeft: '4px solid var(--success)', boxShadow: 'none' }}>
                       <ItemInfo>
-                        <span style={{ fontSize: '1.2rem', color: '#064e3b' }}>Total Net Revenue</span>
-                        <span style={{ color: '#059669', fontSize: '0.85rem' }}>After all adjustments</span>
+                        <span style={{ fontSize: '1.2rem', color: theme.successText }}>Total Net Revenue</span>
+                        <span style={{ color: theme.successText, fontSize: '0.85rem' }}>After all adjustments</span>
                       </ItemInfo>
                       <ItemValue style={{ fontSize: '1.5rem', color: 'var(--success)' }}>{formatCurrency(data.financials.net_amount)}</ItemValue>
                     </ListItem>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '2rem' }}>
-                      <ListItem style={{ background: '#fffbeb', border: '1px solid #fef3c7' }}>
+                      <ListItem style={{ background: theme.warningBg, border: `1px solid ${theme.warningBorder}` }}>
                         <ItemInfo>
                           <span>Credit</span>
-                          <span style={{ color: '#b45309', fontSize: '0.8rem' }}>Outstanding</span>
+                          <span style={{ color: theme.warningText, fontSize: '0.8rem' }}>Outstanding</span>
                         </ItemInfo>
-                        <div style={{ color: '#d97706', fontWeight: 'bold' }}>{formatCurrency(data.financials.credit_amount)}</div>
+                        <div style={{ color: theme.warningText, fontWeight: 'bold' }}>{formatCurrency(data.financials.credit_amount)}</div>
                       </ListItem>
                       <ListItem>
                         <ItemInfo>

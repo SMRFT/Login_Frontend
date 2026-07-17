@@ -1,10 +1,33 @@
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
-import Login from "./Components/Login";
-import Modules from "./Components/Modules";
-import Homescreen from "./Components/Homescreen";
+import styled, { ThemeProvider } from 'styled-components';
 import PrivateRoute from './Components/PrivateRoute';
-import Mdashboard from './Components/Mdashboard';
+import { GlobalStyle } from './GlobalStyle';
+import { useTheme } from './hooks/useTheme';
+import { ThemeModeContext } from './context/ThemeModeContext';
+
+// Lazy load route components for code splitting
+const Login = lazy(() => import("./Components/Login"));
+const Modules = lazy(() => import("./Components/Modules"));
+const Homescreen = lazy(() => import("./Components/Homescreen"));
+const Mdashboard = lazy(() => import("./Components/Mdashboard"));
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  font-family: sans-serif;
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.textSecondary};
+`;
+
+const LoadingFallback = () => (
+  <LoadingContainer>
+    <div>Loading application...</div>
+  </LoadingContainer>
+);
 
 const ContentWrapper = styled.div`
   margin-top: 15px;
@@ -24,30 +47,39 @@ const ContentWrapper = styled.div`
 `;
 
 function App() {
+  const { theme, themeMode, toggleTheme } = useTheme();
+
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Route */}
-        <Route path={`${import.meta.env.BASE_URL}login`} element={<Login />} />
+    <ThemeModeContext.Provider value={{ themeMode, toggleTheme }}>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <BrowserRouter>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          {/* Public Route */}
+          <Route path={`${import.meta.env.BASE_URL}login`} element={<Login />} />
 
-        {/* Protected Routes */}
-        <Route >
-          <Route path={`${import.meta.env.BASE_URL}`} element={<Homescreen />} />
-          {/* Add more protected routes here */}
-        </Route>
+          {/* Protected Routes */}
+          <Route >
+            <Route path={`${import.meta.env.BASE_URL}`} element={<Homescreen />} />
+            {/* Add more protected routes here */}
+          </Route>
 
-        {/* Protected Routes */}
-        <Route element={<PrivateRoute />}>
-          <Route path={`${import.meta.env.BASE_URL}secure`} element={<Modules />} />
-          {/* Add more protected routes here */}
-        </Route>
-        <Route element={<PrivateRoute />}>
-          <Route path={`${import.meta.env.BASE_URL}dashboard`} element={<Mdashboard />} />
-          {/* Add more protected routes here */}
-        </Route>
+          {/* Protected Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path={`${import.meta.env.BASE_URL}secure`} element={<Modules />} />
+            {/* Add more protected routes here */}
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path={`${import.meta.env.BASE_URL}dashboard`} element={<Mdashboard />} />
+            {/* Add more protected routes here */}
+          </Route>
 
-      </Routes>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
+    </ThemeProvider>
+    </ThemeModeContext.Provider>
   );
 }
 
