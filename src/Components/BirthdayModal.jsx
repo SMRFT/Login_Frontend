@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, useTheme } from 'styled-components';
 import { X } from 'lucide-react';
 
 const fadeIn = keyframes`
@@ -36,7 +36,7 @@ const Overlay = styled.div`
 `;
 
 const ModalCard = styled.div`
-  background: #FFFFFF;
+  background: ${({ theme }) => theme.bgCard};
   width: 90%;
   max-width: 500px;
   border-radius: 28px;
@@ -50,7 +50,7 @@ const ModalCard = styled.div`
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(90, 40, 70, 0.35);
   animation: ${slideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(201, 79, 135, 0.14);
+  border: 1px solid ${({ theme }) => theme.borderActive};
   overflow: hidden;
 
   &::before {
@@ -81,7 +81,7 @@ const CloseButton = styled.button`
   top: 1.25rem;
   right: 1.25rem;
   background: rgba(217, 83, 143, 0.08);
-  border: 1px solid rgba(201, 79, 135, 0.2);
+  border: 1px solid ${({ theme }) => theme.borderActive};
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -91,11 +91,11 @@ const CloseButton = styled.button`
   cursor: pointer;
   z-index: 10;
   transition: all 0.2s;
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
 
   &:hover {
     background: rgba(217, 83, 143, 0.16);
-    color: #A83A6E;
+    color: ${({ theme }) => theme.brandSecondary};
     transform: rotate(90deg);
   }
 `;
@@ -108,7 +108,7 @@ const ProfileImageContainer = styled.div`
   margin: 0 auto 1.5rem;
   border-radius: 50%;
   padding: 4px;
-  background: linear-gradient(135deg, #D9538F, #1E8A7D);
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandTertiary});
   box-shadow: 0 10px 30px -10px rgba(90, 40, 70, 0.4);
   animation: ${popIn} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
   display: flex;
@@ -134,8 +134,8 @@ const AvatarFallback = styled.div`
   justify-content: center;
   font-size: 3.5rem;
   font-weight: 800;
-  color: #FFFFFF;
-  background: linear-gradient(135deg, #D9538F, #A83A6E);
+  color: #fff;
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary});
   text-transform: uppercase;
 `;
 
@@ -151,7 +151,7 @@ const getInitials = (name) => {
 const Title = styled.h2`
   font-size: 2.5rem;
   margin: 1rem 0 0.5rem;
-  background: linear-gradient(120deg, #D9538F 0%, #A83A6E 45%, #1E8A7D 100%);
+  background: linear-gradient(120deg, ${({ theme }) => theme.brandMain} 0%, ${({ theme }) => theme.brandSecondary} 45%, ${({ theme }) => theme.brandTertiary} 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -165,7 +165,7 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.p`
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
@@ -175,7 +175,7 @@ const Subtitle = styled.p`
 
 const EmployeeName = styled.h3`
   font-size: 1.75rem;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
   margin: 0.5rem 0 0.25rem;
   font-weight: 700;
   position: relative;
@@ -187,7 +187,7 @@ const EmployeeName = styled.h3`
 `;
 
 const DepartmentText = styled.p`
-  color: #1E8A7D;
+  color: ${({ theme }) => theme.brandTertiary};
   font-size: 1rem;
   font-weight: 600;
   margin: 0 0 1rem;
@@ -212,7 +212,7 @@ const NavButton = styled.button`
   border-radius: 12px;
   border: 1px solid rgba(201, 79, 135, 0.3);
   background: rgba(217, 83, 143, 0.06);
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
   cursor: pointer;
   font-weight: 700;
   transition: background 0.2s ease;
@@ -223,7 +223,7 @@ const NavButton = styled.button`
 `;
 
 const PageCounter = styled.span`
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 0.95rem;
   font-weight: 600;
 `;
@@ -242,6 +242,7 @@ const ConfettiPiece = styled.div`
 `;
 
 const BirthdayModal = ({ onClose, birthdayData }) => {
+  const theme = useTheme();
   const [confetti, setConfetti] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [uniqueSessionSeed] = useState(() => Math.random().toString(36).substring(7));
@@ -252,7 +253,7 @@ const BirthdayModal = ({ onClose, birthdayData }) => {
 
   useEffect(() => {
     // Generate confetti
-    const colors = ['#D9538F', '#A83A6E', '#1E8A7D', '#2BB3A3', '#F2A9C8'];
+    const colors = [theme.brandMain, theme.brandSecondary, theme.brandTertiary, theme.brandTertiary, '#F2A9C8'];
     const newConfetti = Array.from({ length: 50 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -260,7 +261,7 @@ const BirthdayModal = ({ onClose, birthdayData }) => {
       color: colors[Math.floor(Math.random() * colors.length)]
     }));
     setConfetti(newConfetti);
-  }, []);
+  }, [theme]);
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % birthdays.length);
@@ -279,14 +280,17 @@ const BirthdayModal = ({ onClose, birthdayData }) => {
       ))}
       <ModalCard>
         <CloseButton onClick={onClose}>
-          <X size={20} color="#A83A6E" />
+          <X size={20} color={theme.brandSecondary} />
         </CloseButton>
 
         <ProfileImageContainer>
-          <ProfileImage
-            src={currentPerson.imageUrl || `https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?auto=format&fit=crop&w=300&q=80`}
-            alt="Profile"
-          />
+          {currentPerson.imageUrl ? (
+            <ProfileImage src={currentPerson.imageUrl} alt="Profile" />
+          ) : (
+            <AvatarFallback>
+              {currentPerson.employeeName ? currentPerson.employeeName.charAt(0) : 'U'}
+            </AvatarFallback>
+          )}
         </ProfileImageContainer>
 
         <Title>Happy Birthday!</Title>

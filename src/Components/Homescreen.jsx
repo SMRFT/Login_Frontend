@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes, createGlobalStyle } from 'styled-components';
+import styled, { keyframes, createGlobalStyle, useTheme } from 'styled-components';
 import Logo from './Images/shanmuga-innovations-llp-pink.png';
+import ThemeToggle from './ThemeToggle';
 
 const GlobalFont = createGlobalStyle`
   body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -60,7 +61,7 @@ const Reveal = ({ children, ...rest }) => {
 
 // --- Page ---
 const Page = styled.div`
-  background: #FFFFFF;
+  background: ${({ theme }) => theme.bgCard};
   overflow-x: hidden;
 `;
 
@@ -75,18 +76,14 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-between;
   padding: 12px 5vw;
-  background: rgba(255, 255, 255, 0.75);
+  background: ${({ theme }) => theme.bgOverlay};
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(201, 79, 135, 0.10);
+  border-bottom: 1px solid ${({ theme }) => theme.borderActive};
   box-sizing: border-box;
 
   @media (max-width: 720px) {
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    padding: 12px 4vw;
+    gap: 12px;
   }
 
   img {
@@ -105,22 +102,24 @@ const NavLinks = styled.div`
   font-weight: 500;
 
   a {
-    color: #2B2230;
+    color: ${({ theme }) => theme.textPrimary};
     text-decoration: none;
   }
   a:hover {
-    color: #A83A6E;
+    color: ${({ theme }) => theme.brandSecondary};
   }
 
   @media (max-width: 720px) {
-    gap: 14px;
-    font-size: 13px;
+    a {
+      display: none;
+    }
+    gap: 16px;
   }
 `;
 
 const NavLoginPill = styled.button`
-  background: linear-gradient(135deg, #D9538F, #A83A6E);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary});
+  color: #fff;
   padding: 10px 26px;
   border-radius: 999px;
   font-weight: 600;
@@ -144,7 +143,7 @@ const Hero = styled.header`
   justify-content: center;
   text-align: center;
   padding: 100px 5vw 60px; /* Adjusted padding-top to account for fixed header but keep gap small */
-  background: linear-gradient(180deg, #FFFFFF 0%, #FDF2F7 45%, #F0FAF7 100%);
+  background: ${({ theme }) => theme.bgPattern};
 `;
 
 const FloatingLayer = styled.div`
@@ -180,8 +179,8 @@ const Badge = styled.div`
   align-items: center;
   gap: 8px;
   background: rgba(201, 79, 135, 0.08);
-  border: 1px solid rgba(201, 79, 135, 0.2);
-  color: #A83A6E;
+  border: 1px solid ${({ theme }) => theme.borderActive};
+  color: ${({ theme }) => theme.brandSecondary};
   font-size: 13px;
   font-weight: 600;
   padding: 8px 18px;
@@ -193,11 +192,11 @@ const CompanyMark = styled.div`
   font-size: clamp(22px, 3vw, 34px);
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: #C94F87;
+  color: ${({ theme }) => theme.brandSecondary};
   margin-top: -4px;
 
   span {
-    color: #2B2230;
+    color: ${({ theme }) => theme.textPrimary};
   }
 `;
 
@@ -209,7 +208,7 @@ const HeroTitle = styled.h1`
   letter-spacing: -0.02em;
 
   span {
-    background: linear-gradient(90deg, #D9538F, #A83A6E 50%, #2BB3A3);
+    background: linear-gradient(90deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary} 50%, ${({ theme }) => theme.brandTertiary});
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -219,7 +218,7 @@ const HeroTitle = styled.h1`
 const HeroText = styled.p`
   font-size: clamp(15px, 1.6vw, 19px);
   line-height: 1.7;
-  color: #6B5A66;
+  color: ${({ theme }) => theme.textSecondary};
   max-width: 680px;
   margin: 0;
   font-weight: 400;
@@ -248,34 +247,34 @@ const ButtonBase = styled.a`
 `;
 
 const PrimaryButton = styled(ButtonBase)`
-  background: linear-gradient(135deg, #D9538F, #A83A6E);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary});
+  color: #fff;
   box-shadow: 0 14px 30px -10px rgba(201, 79, 135, 0.55);
 
   &:hover {
-    color: #FFFFFF;
+    color: #fff;
   }
 `;
 
 const SecondaryButton = styled(ButtonBase)`
-  background: #FFFFFF;
-  color: #A83A6E;
+  background: ${({ theme }) => theme.bgCard};
+  color: ${({ theme }) => theme.brandSecondary};
   border: 2px solid rgba(201, 79, 135, 0.35);
   padding: 13px 32px;
 
   &:hover {
-    color: #A83A6E;
+    color: ${({ theme }) => theme.brandSecondary};
   }
 `;
 
 const TertiaryButton = styled(ButtonBase)`
   background: rgba(43, 179, 163, 0.1);
-  color: #1E8A7D;
+  color: ${({ theme }) => theme.brandTertiary};
   border: 2px solid rgba(43, 179, 163, 0.35);
   padding: 13px 32px;
 
   &:hover {
-    color: #1E8A7D;
+    color: ${({ theme }) => theme.brandTertiary};
   }
 `;
 
@@ -285,14 +284,14 @@ const StatsStrip = styled.section`
   justify-content: center;
   gap: 16px 56px;
   padding: 26px 5vw;
-  border-top: 1px solid #F6E4ED;
-  border-bottom: 1px solid #F6E4ED;
-  background: #FFFFFF;
+  border-top: 1px solid ${({ theme }) => theme.borderLight};
+  border-bottom: 1px solid ${({ theme }) => theme.borderLight};
+  background: ${({ theme }) => theme.bgCard};
   font-size: 13.5px;
-  color: #6B5A66;
+  color: ${({ theme }) => theme.textSecondary};
 
   strong {
-    color: #2B2230;
+    color: ${({ theme }) => theme.textPrimary};
   }
 `;
 
@@ -319,7 +318,7 @@ const AboutText = styled.div`
 `;
 
 const Eyebrow = styled.div`
-  color: #D9538F;
+  color: ${({ theme }) => theme.brandMain};
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.14em;
@@ -334,7 +333,7 @@ const SectionTitle = styled.h2`
 `;
 
 const BodyText = styled.p`
-  color: #6B5A66;
+  color: ${({ theme }) => theme.textSecondary};
   line-height: 1.8;
   margin: 0;
   font-size: 15.5px;
@@ -351,17 +350,17 @@ const SpecialtyWrap = styled.div`
 
 const SpecialtyPill = styled.div`
   background: linear-gradient(135deg, rgba(217, 83, 143, 0.07), rgba(43, 179, 163, 0.07));
-  border: 1px solid rgba(201, 79, 135, 0.16);
+  border: 1px solid ${({ theme }) => theme.borderActive};
   border-radius: 999px;
   padding: 10px 18px;
   font-size: 13.5px;
   font-weight: 500;
-  color: #4A3A46;
+  color: ${({ theme }) => theme.textPrimary};
 `;
 
 const ServicesSection = styled.section`
   padding: 90px 5vw;
-  background: linear-gradient(180deg, #FDF2F7, #FFFFFF);
+  background: ${({ theme }) => theme.bgCard};
 `;
 
 const ServicesInner = styled.div`
@@ -387,9 +386,9 @@ const ServicesGrid = styled.div`
 `;
 
 const ServiceCard = styled.div`
-  background: rgba(255, 255, 255, 0.8);
+  background: ${({ theme }) => theme.bgOverlay};
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(201, 79, 135, 0.12);
+  border: 1px solid ${({ theme }) => theme.borderActive};
   border-radius: 22px;
   padding: 28px;
   display: flex;
@@ -412,7 +411,7 @@ const ServiceGlyph = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.$ink};
+  color: ${({ $ink, theme }) => $ink === 'teal' ? theme.brandTertiary : theme.brandSecondary};
   font-weight: 800;
   font-size: 15px;
 `;
@@ -423,7 +422,7 @@ const ServiceTitle = styled.div`
 `;
 
 const ServiceDesc = styled.div`
-  color: #6B5A66;
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 14px;
   line-height: 1.65;
 `;
@@ -448,19 +447,19 @@ const PillarCard = styled.div`
 const PillarStat = styled.div`
   font-size: 30px;
   font-weight: 800;
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
 `;
 
 const PillarLabel = styled.div`
   font-size: 13.5px;
   font-weight: 600;
-  color: #4A3A46;
+  color: ${({ theme }) => theme.textPrimary};
 `;
 
 const TechSection = styled.section`
   padding: 80px 5vw;
   background: #241B22;
-  color: #FFFFFF;
+  color: #fff;
 `;
 
 const TechInner = styled.div`
@@ -514,8 +513,8 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureCard = styled.div`
-  background: #FFFFFF;
-  border: 1px solid rgba(201, 79, 135, 0.14);
+  background: ${({ theme }) => theme.bgCard};
+  border: 1px solid ${({ theme }) => theme.borderActive};
   border-radius: 18px;
   padding: 22px;
   display: flex;
@@ -533,23 +532,23 @@ const FeatureDot = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #D9538F, #2BB3A3);
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandTertiary});
   flex: none;
 `;
 
 const FeatureLabel = styled.div`
   font-weight: 600;
   font-size: 14.5px;
-  color: #3A2C36;
+  color: ${({ theme }) => theme.textPrimary};
 `;
 
 const CtaSection = styled.section`
   margin: 0 5vw 90px;
   border-radius: 28px;
-  background: linear-gradient(120deg, #D9538F, #A83A6E 55%, #1E8A7D);
+  background: linear-gradient(120deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary} 55%, ${({ theme }) => theme.brandTertiary});
   padding: 64px 6vw;
   text-align: center;
-  color: #FFFFFF;
+  color: #fff;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -579,8 +578,8 @@ const CtaActions = styled.div`
 `;
 
 const CtaWhiteButton = styled.a`
-  background: #FFFFFF;
-  color: #A83A6E;
+  background: ${({ theme }) => theme.bgCard};
+  color: ${({ theme }) => theme.brandSecondary};
   padding: 14px 32px;
   border-radius: 999px;
   font-weight: 700;
@@ -591,7 +590,7 @@ const CtaWhiteButton = styled.a`
 
 const CtaOutlineButton = styled.button`
   border: 2px solid rgba(255, 255, 255, 0.7);
-  color: #FFFFFF;
+  color: #fff;
   background: transparent;
   padding: 12px 30px;
   border-radius: 999px;
@@ -624,7 +623,7 @@ const FooterBrand = styled.div`
 `;
 
 const FooterLogoBadge = styled.div`
-  background: #FFFFFF;
+  background: #fff;
   border-radius: 14px;
   padding: 10px 16px;
   align-self: flex-start;
@@ -640,7 +639,7 @@ const FooterName = styled.div`
   font-size: 19px;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #FFFFFF;
+  color: #fff;
 `;
 
 const FooterCol = styled.div`
@@ -652,7 +651,7 @@ const FooterCol = styled.div`
 `;
 
 const FooterColTitle = styled.div`
-  color: #FFFFFF;
+  color: #fff;
   font-weight: 700;
   font-size: 14px;
 `;
@@ -661,7 +660,7 @@ const FooterLink = styled.a`
   color: #F2A9C8;
   text-decoration: none;
   &:hover {
-    color: #FFFFFF;
+    color: #fff;
   }
 `;
 
@@ -678,8 +677,8 @@ const FooterBottom = styled.div`
 // --- Content ---
 const SPECIALTIES = ['Healthcare Software', 'Hospital Information Systems', 'Electronic Medical Records', 'Laboratory Information Systems', 'Pharmacy Management', 'AI Automation', 'Digital Transformation', 'Cloud Applications', 'Custom Enterprise Software'];
 
-const pink = { tint: 'rgba(217,83,143,0.12)', ink: '#A83A6E' };
-const teal = { tint: 'rgba(43,179,163,0.14)', ink: '#1E8A7D' };
+const pink = { tint: 'rgba(217,83,143,0.12)', ink: 'pink' };
+const teal = { tint: 'rgba(43,179,163,0.14)', ink: 'teal' };
 
 const SERVICES = [
   { glyph: 'HMS', title: 'Hospital Management System', desc: 'End-to-end OP, IP, billing, and administration for single and multi-hospital networks.', ...pink },
@@ -708,6 +707,7 @@ const FEATURES = ['Secure Authentication', 'Face Recognition', 'Role Based Acces
 
 const Landing = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
   const goLogin = () => navigate(`${import.meta.env.BASE_URL}login`);
 
   return (
@@ -720,6 +720,7 @@ const Landing = () => {
           <a href="#services">Services</a>
           <a href="#technology">Technology</a>
           <a href="#contact">Contact</a>
+          <ThemeToggle />
           <NavLoginPill onClick={goLogin}>Login</NavLoginPill>
         </NavLinks>
       </Nav>
@@ -730,13 +731,13 @@ const Landing = () => {
             <svg width="44" height="44" viewBox="0 0 44 44"><rect x="17" y="6" width="10" height="32" rx="4" fill="#F2A9C8" /><rect x="6" y="17" width="32" height="10" rx="4" fill="#F2A9C8" /></svg>
           </FloatIcon>
           <FloatIcon $left="16%" $top="62%" $alt $duration="9s" $opacity={0.7}>
-            <svg width="46" height="46" viewBox="0 0 46 46"><rect x="6" y="16" width="34" height="15" rx="7.5" fill="#7ED4C3" transform="rotate(-30 23 23)" /><rect x="23" y="16" width="17" height="15" rx="7.5" fill="#2BB3A3" transform="rotate(-30 23 23)" /></svg>
+            <svg width="46" height="46" viewBox="0 0 46 46"><rect x="6" y="16" width="34" height="15" rx="7.5" fill="#7ED4C3" transform="rotate(-30 23 23)" /><rect x="23" y="16" width="17" height="15" rx="7.5" fill={theme.brandTertiary} transform="rotate(-30 23 23)" /></svg>
           </FloatIcon>
           <FloatIcon $right="10%" $top="20%" $alt $duration="8s" $opacity={0.75}>
-            <svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 44 C14 34 6 27 6 18 A10 10 0 0 1 26 14 A10 10 0 0 1 46 18 C46 27 38 34 26 44 Z" fill="#F2A9C8" /><path d="M12 27 h8 l3-6 4 10 3-6 h10" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 44 C14 34 6 27 6 18 A10 10 0 0 1 26 14 A10 10 0 0 1 46 18 C46 27 38 34 26 44 Z" fill="#F2A9C8" /><path d="M12 27 h8 l3-6 4 10 3-6 h10" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </FloatIcon>
           <FloatIcon $right="18%" $top="64%" $duration="10s" $opacity={0.7}>
-            <svg width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="6" fill="#2BB3A3" /><circle cx="8" cy="10" r="4" fill="#7ED4C3" /><circle cx="38" cy="10" r="4" fill="#7ED4C3" /><circle cx="8" cy="36" r="4" fill="#7ED4C3" /><circle cx="38" cy="36" r="4" fill="#7ED4C3" /><path d="M12 13 L19 19 M34 13 L27 19 M12 33 L19 27 M34 33 L27 27" stroke="#7ED4C3" strokeWidth="2" /></svg>
+            <svg width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="6" fill={theme.brandTertiary} /><circle cx="8" cy="10" r="4" fill="#7ED4C3" /><circle cx="38" cy="10" r="4" fill="#7ED4C3" /><circle cx="8" cy="36" r="4" fill="#7ED4C3" /><circle cx="38" cy="36" r="4" fill="#7ED4C3" /><path d="M12 13 L19 19 M34 13 L27 19 M12 33 L19 27 M34 33 L27 27" stroke="#7ED4C3" strokeWidth="2" /></svg>
           </FloatIcon>
           <FloatIcon $left="44%" $top="8%" $duration="11s" $opacity={0.55}>
             <svg width="54" height="38" viewBox="0 0 54 38"><path d="M14 30 a10 10 0 1 1 3-19 a12 12 0 0 1 23 3 a8 8 0 0 1 0 16 Z" fill="#CDEFE8" /></svg>
@@ -754,14 +755,14 @@ const Landing = () => {
             <TertiaryButton onClick={goLogin}>Login</TertiaryButton>
           </HeroActions>
           <svg width="360" height="40" viewBox="0 0 360 40" style={{ marginTop: '10px', opacity: 0.8 }} aria-hidden="true">
-            <DashedPath d="M0 20 h90 l12-14 14 26 12-20 8 8 h90 l10-10 12 18 10-8 h102" fill="none" stroke="#D9538F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="6 6" />
+            <DashedPath d="M0 20 h90 l12-14 14 26 12-20 8 8 h90 l10-10 12 18 10-8 h102" fill="none" stroke={theme.brandMain} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="6 6" />
           </svg>
         </HeroInner>
       </Hero>
 
       <StatsStrip>
         <div><strong>Incorporated:</strong> 17 March 2025</div>
-        <div><strong>Status:</strong> <span style={{ color: '#1E8A7D', fontWeight: 600 }}>Active</span></div>
+        <div><strong>Status:</strong> <span style={{ color: theme.brandTertiary, fontWeight: 600 }}>Active</span></div>
         <div><strong>ROC:</strong> RoC-Coimbatore</div>
         <div><strong>Industry:</strong> Computer Programming, Consultancy &amp; Related Activities</div>
       </StatsStrip>

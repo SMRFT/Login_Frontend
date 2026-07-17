@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import styled, { keyframes } from "styled-components"
+import styled, { keyframes, useTheme, css } from "styled-components"
 import { validate } from "jsauth"
 import Logo from "./Images/shanmuga-innovations-llp-pink.png"
 import Logo1 from "./Images/logo1.png"
+import ThemeToggle from "./ThemeToggle"
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL
 
@@ -36,15 +37,15 @@ const PageContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
   animation: ${fadeIn} 0.6s ease both;
 `
 
 const BrandPanel = styled.div`
   flex: 1 1 420px;
   min-height: 100vh;
-  background: linear-gradient(155deg, #D9538F 0%, #A83A6E 55%, #1E8A7D 130%);
-  color: #FFFFFF;
+  background: linear-gradient(155deg, ${({ theme }) => theme.brandMain} 0%, ${({ theme }) => theme.brandSecondary} 55%, ${({ theme }) => theme.brandTertiary} 130%);
+  color: ${({ theme }) => theme.bgCard};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -54,8 +55,7 @@ const BrandPanel = styled.div`
   overflow: hidden;
 
   @media (max-width: 900px) {
-    min-height: auto;
-    padding: 40px 6vw 56px;
+    display: none;
   }
 `
 
@@ -95,7 +95,7 @@ const LogoBadge = styled.div`
   align-self: flex-start;
   position: relative;
   display: inline-block;
-  background: #FFFFFF;
+  background: ${({ theme }) => theme.bgCard};
   border-radius: 14px;
   padding: 10px 16px;
 
@@ -171,7 +171,11 @@ const FormPanel = styled.div`
   justify-content: center;
   padding: 48px 5vw;
   box-sizing: border-box;
-  background: #FFFFFF;
+  background: ${({ theme }) => theme.bgCard};
+
+  @media (max-width: 900px) {
+    min-height: 100vh;
+  }
 `
 
 const FormWrapper = styled.div`
@@ -199,7 +203,7 @@ const FormBrandRow = styled.div`
 const FormBrandName = styled.div`
   font-size: 20px;
   font-weight: 700;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
   letter-spacing: 0.02em;
 `
 
@@ -219,7 +223,7 @@ const FormTitle = styled.div`
 
 const FormSubtitle = styled.div`
   font-size: 14px;
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
 `
 
 const Form = styled.form`
@@ -243,7 +247,7 @@ const FieldLabelRow = styled.div`
 const FieldLabel = styled.label`
   font-size: 13px;
   font-weight: 600;
-  color: #5C4B57;
+  color: ${({ theme }) => theme.textSecondary};
 `
 
 const InlineLink = styled.button`
@@ -252,38 +256,38 @@ const InlineLink = styled.button`
   padding: 0;
   cursor: pointer;
   font-size: 12.5px;
-  color: #C94F87;
+  color: ${({ theme }) => theme.brandSecondary};
   font-weight: 600;
 
   &:hover {
-    color: #A83A6E;
+    color: ${({ theme }) => theme.brandSecondary};
   }
 `
 
 const Input = styled.input`
-  border: 1.5px solid #EBDDE5;
+  border: 1.5px solid ${({ theme }) => theme.borderLight};
   border-radius: 12px;
   padding: 13px 16px;
   font-size: 15px;
   font-family: 'Poppins', sans-serif;
-  color: #2B2230;
-  background: #FFFDFE;
+  color: ${({ theme }) => theme.textPrimary};
+  background: ${({ theme }) => theme.bgInput};
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
   box-sizing: border-box;
 
   &::placeholder {
-    color: #BFAFB9;
+    color: ${({ theme }) => theme.textMuted};
   }
 
   &:focus {
     outline: none;
-    border-color: #D9538F;
+    border-color: ${({ theme }) => theme.brandMain};
     box-shadow: 0 0 0 3px rgba(217, 83, 143, 0.12);
   }
 
   &:disabled {
-    background: #F6EFF3;
+    background: ${({ theme }) => theme.bgSubtle};
     cursor: not-allowed;
   }
 `
@@ -306,7 +310,7 @@ const PasswordToggle = styled.button`
   background: transparent;
   cursor: pointer;
   padding: 8px;
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
   font-weight: 700;
   font-size: 11.5px;
   letter-spacing: 0.05em;
@@ -317,14 +321,14 @@ const RememberLabel = styled.label`
   align-items: center;
   gap: 10px;
   font-size: 13.5px;
-  color: #5C4B57;
+  color: ${({ theme }) => theme.textSecondary};
   cursor: pointer;
   font-weight: 500;
 
   input {
     width: 16px;
     height: 16px;
-    accent-color: #D9538F;
+    accent-color: ${({ theme }) => theme.brandMain};
   }
 `
 
@@ -332,8 +336,8 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 12px;
   padding: 15px;
-  background: linear-gradient(135deg, #D9538F, #A83A6E);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary});
+  color: ${({ theme }) => theme.bgCard};
   font-family: 'Poppins', sans-serif;
   font-size: 15.5px;
   font-weight: 700;
@@ -361,22 +365,22 @@ const SecurityNote = styled.div`
   align-items: center;
   gap: 10px;
   justify-content: center;
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 12.5px;
 `
 
 const HelperText = styled.div`
   text-align: center;
   font-size: 13.5px;
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
 
   a {
-    color: #C94F87;
+    color: ${({ theme }) => theme.brandSecondary};
     font-weight: 600;
     text-decoration: none;
   }
   a:hover {
-    color: #A83A6E;
+    color: ${({ theme }) => theme.brandSecondary};
   }
 `
 
@@ -393,7 +397,7 @@ const BackHomeLink = styled.button`
   text-align: center;
   font-size: 15px;
   font-weight: 700;
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
   padding: 10px 22px;
   transition: background 0.2s ease, transform 0.15s ease;
 
@@ -404,9 +408,9 @@ const BackHomeLink = styled.button`
 `
 
 const ErrorMessage = styled.div`
-  background: #FDF0F4;
-  border: 1px solid #F3C9DA;
-  color: #A83A6E;
+  background: ${({ theme }) => theme.errorBg};
+  border: 1px solid ${({ theme }) => theme.errorBorder};
+  color: ${({ theme }) => theme.brandSecondary};
   padding: 0.75rem 1rem;
   border-radius: 10px;
   font-size: 0.875rem;
@@ -421,9 +425,9 @@ const ErrorMessage = styled.div`
 `
 
 const SuccessMessage = styled.div`
-  background: #EAF7F4;
-  border: 1px solid #BEE6DB;
-  color: #1E8A7D;
+  background: ${({ theme }) => theme.successBg};
+  border: 1px solid ${({ theme }) => theme.successBorder};
+  color: ${({ theme }) => theme.brandTertiary};
   padding: 0.75rem 1rem;
   border-radius: 10px;
   font-size: 0.875rem;
@@ -467,8 +471,8 @@ const Modal = styled.div`
 `
 
 const ModalContent = styled.div`
-  background: #FFFFFF;
-  border: 1px solid #EBDDE5;
+  background: ${({ theme }) => theme.bgCard};
+  border: 1px solid ${({ theme }) => theme.borderLight};
   border-radius: 24px;
   padding: 2.5rem;
   width: 100%;
@@ -490,11 +494,11 @@ const ModalHeader = styled.h3`
   font-weight: 800;
   margin: 0 0 1rem 0;
   text-align: center;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
 `
 
 const ModalText = styled.p`
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   margin-bottom: 2rem;
   line-height: 1.6;
   text-align: center;
@@ -519,21 +523,17 @@ const ModalButton = styled.button`
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  background: ${({ $primary, theme }) => $primary ? `linear-gradient(135deg, ${theme.brandMain}, ${theme.brandSecondary})` : theme.bgSubtle};
+  color: ${({ $primary, theme }) => $primary ? '#fff' : theme.textSecondary};
+  border: ${({ $primary, theme }) => $primary ? 'none' : `1px solid ${theme.borderLight}`};
 
-  ${props => props.$primary ? `
-    background: linear-gradient(135deg, #D9538F, #A83A6E);
-    color: white;
-
+  ${({ $primary, theme }) => $primary ? css`
     &:hover:not(:disabled) {
       filter: brightness(1.06);
     }
-  ` : `
-    background: #F6EFF3;
-    color: #5C4B57;
-    border: 1px solid #EBDDE5;
-
+  ` : css`
     &:hover:not(:disabled) {
-      background: #EEDFE7;
+      background: ${theme.bgSubtleHover};
     }
   `}
 
@@ -543,18 +543,31 @@ const ModalButton = styled.button`
   }
 `
 
-const CheckIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 13 13">
-    <path d="M2 7 L5 10 L11 3" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
+const CheckIcon = () => {
+  const theme = useTheme()
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13">
+      <path d="M2 7 L5 10 L11 3" fill="none" stroke={theme.bgCard} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
-const ShieldIcon = () => (
-  <svg width="13" height="15" viewBox="0 0 13 15">
-    <path d="M6.5 1 L12 3.2 V7.5 C12 11 9.8 13.2 6.5 14.2 C3.2 13.2 1 11 1 7.5 V3.2 Z" fill="none" stroke="#1E8A7D" strokeWidth="1.4" strokeLinejoin="round" />
-    <path d="M4.2 7.6 L6 9.4 L9 5.8" fill="none" stroke="#1E8A7D" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
+const ShieldIcon = () => {
+  const theme = useTheme()
+  return (
+    <svg width="13" height="15" viewBox="0 0 13 15">
+      <path d="M6.5 1 L12 3.2 V7.5 C12 11 9.8 13.2 6.5 14.2 C3.2 13.2 1 11 1 7.5 V3.2 Z" fill="none" stroke={theme.brandTertiary} strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M4.2 7.6 L6 9.4 L9 5.8" fill="none" stroke={theme.brandTertiary} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+const FixedThemeToggle = styled(ThemeToggle)`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+`
 
 const points = [
   'HIPAA-grade secure architecture',
@@ -575,6 +588,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
+  const theme = useTheme()
 
   useEffect(() => {
     // Clear any existing tokens on component mount
@@ -695,19 +709,21 @@ const Login = () => {
 
   return (
     <PageContainer>
+      <FixedThemeToggle />
+
       {/* Brand Panel */}
       <BrandPanel>
         <DecorCircleTop />
         <DecorCircleBottom />
         <FloatIcon right="8%" top="12%" duration="8s" opacity={0.5} aria-hidden="true">
           <svg width="40" height="40" viewBox="0 0 44 44">
-            <rect x="17" y="6" width="10" height="32" rx="4" fill="#FFFFFF" />
-            <rect x="6" y="17" width="32" height="10" rx="4" fill="#FFFFFF" />
+            <rect x="17" y="6" width="10" height="32" rx="4" fill={theme.bgCard} />
+            <rect x="6" y="17" width="32" height="10" rx="4" fill={theme.bgCard} />
           </svg>
         </FloatIcon>
         <FloatIcon left="12%" top="22%" duration="10s" opacity={0.45} aria-hidden="true">
           <svg width="52" height="30" viewBox="0 0 52 30">
-            <path d="M2 15 h12 l4-9 6 18 5-12 3 3 h18" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M2 15 h12 l4-9 6 18 5-12 3 3 h18" fill="none" stroke={theme.bgCard} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </FloatIcon>
 

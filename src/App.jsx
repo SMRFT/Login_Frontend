@@ -1,7 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import PrivateRoute from './Components/PrivateRoute';
+import { GlobalStyle } from './GlobalStyle';
+import { useTheme } from './hooks/useTheme';
+import { ThemeModeContext } from './context/ThemeModeContext';
 
 // Lazy load route components for code splitting
 const Login = lazy(() => import("./Components/Login"));
@@ -17,7 +20,7 @@ const LoadingContainer = styled.div`
   width: 100vw;
   font-family: sans-serif;
   font-size: 1.1rem;
-  color: #666;
+  color: ${({ theme }) => theme.textSecondary};
 `;
 
 const LoadingFallback = () => (
@@ -44,8 +47,13 @@ const ContentWrapper = styled.div`
 `;
 
 function App() {
+  const { theme, themeMode, toggleTheme } = useTheme();
+
   return (
-    <BrowserRouter>
+    <ThemeModeContext.Provider value={{ themeMode, toggleTheme }}>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <BrowserRouter>
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           {/* Public Route */}
@@ -70,6 +78,8 @@ function App() {
         </Routes>
       </Suspense>
     </BrowserRouter>
+    </ThemeProvider>
+    </ThemeModeContext.Provider>
   );
 }
 

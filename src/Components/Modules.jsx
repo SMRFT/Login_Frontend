@@ -6,6 +6,7 @@ import { validate } from "jsauth"
 import { useNavigate } from "react-router-dom"
 import { jwtDecode } from "jwt-decode"
 import BirthdayModal from "./BirthdayModal"
+import ThemeToggle from "./ThemeToggle"
 
 const securityBaseUrl = import.meta.env.VITE_BACKEND_SECURITY_BASE_URL
 
@@ -23,16 +24,16 @@ const float = keyframes`
 
 // Layout
 const PageContainer = styled.div`
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  background:
-    radial-gradient(1100px 550px at 85% -10%, rgba(217, 83, 143, 0.1), transparent 60%),
-    radial-gradient(900px 500px at 0% 110%, rgba(30, 138, 125, 0.09), transparent 60%),
-    linear-gradient(155deg, #FFF3F9 0%, #FDF6FA 50%, #EDF7F4 100%);
+  background: ${({ theme }) => theme.bgPattern};
   padding: 36px 6vw 80px;
   box-sizing: border-box;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
   animation: ${fadeIn} 0.6s ease both;
 
   @media (max-width: 768px) {
@@ -42,10 +43,32 @@ const PageContainer = styled.div`
 
 const ContentWrapper = styled.div`
   max-width: 1240px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 36px;
+  height: 100%;
+  flex: 1;
+  overflow: hidden;
+`
+
+const ScrollableArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  padding-bottom: 24px;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(217, 83, 143, 0.3);
+    border-radius: 4px;
+  }
 `
 
 const HeaderSection = styled.div`
@@ -53,25 +76,35 @@ const HeaderSection = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  
+  @media (max-width: 600px) {
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `
 
 const BrandColumn = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
 `
 
 const WelcomeTitle = styled.h1`
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: clamp(18px, 2vw, 24px);
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.01em;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
 `
 
 const UserNameHighlight = styled.span`
-  background: linear-gradient(120deg, #D9538F 0%, #A83A6E 45%, #1E8A7D 100%);
+  background: linear-gradient(120deg, ${({ theme }) => theme.brandMain} 0%, ${({ theme }) => theme.brandSecondary} 45%, ${({ theme }) => theme.brandTertiary} 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -81,21 +114,21 @@ const UserNameHighlight = styled.span`
 const BrandSubtitle = styled.div`
   font-size: 14px;
   font-weight: 500;
-  color: #9C8A97;
+  color: ${({ theme }) => theme.textMuted};
   letter-spacing: 0.06em;
   margin-top: -6px;
 `
 
 const BranchRow = styled.div`
   font-size: 13.5px;
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   display: flex;
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
 
   strong {
-    color: #1E8A7D;
+    color: ${({ theme }) => theme.brandTertiary};
     letter-spacing: 0.04em;
   }
 `
@@ -105,14 +138,14 @@ const ChangeBranchLink = styled.button`
   border: none;
   padding: 0;
   cursor: pointer;
-  color: #C94F87;
+  color: ${({ theme }) => theme.brandSecondary};
   text-decoration: underline;
   font-weight: 600;
   font-size: 13.5px;
   font-family: inherit;
 
   &:hover {
-    color: #A83A6E;
+    color: ${({ theme }) => theme.brandSecondary};
   }
 `
 
@@ -120,6 +153,7 @@ const HeaderActions = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 `
 
 const LogoutBtn = styled.button`
@@ -127,13 +161,13 @@ const LogoutBtn = styled.button`
   align-items: center;
   gap: 8px;
   border: 1.5px solid rgba(201, 79, 135, 0.4);
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
   padding: 10px 22px;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
-  background: #FFFFFF;
+  background: ${({ theme }) => theme.bgCard};
   cursor: pointer;
   transition: background 0.15s ease;
 
@@ -148,11 +182,11 @@ const Divider = styled.div`
 `
 
 const ErrorBanner = styled.div`
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
   text-align: center;
   padding: 1rem;
-  background: #FDF0F4;
-  border: 1px solid #F3C9DA;
+  background: ${({ theme }) => theme.errorBg};
+  border: 1px solid ${({ theme }) => theme.errorBorder};
   border-radius: 12px;
 `
 
@@ -162,22 +196,22 @@ const BranchSelectionContainer = styled.div`
   max-width: 600px;
   margin: 1rem auto;
   padding: 3rem;
-  background: #FFFFFF;
-  border: 1px solid rgba(201, 79, 135, 0.14);
+  background: ${({ theme }) => theme.bgCard};
+  border: 1px solid ${({ theme }) => theme.borderActive};
   border-radius: 28px;
   text-align: center;
   box-shadow: 0 20px 40px -20px rgba(90, 40, 70, 0.25);
   animation: ${fadeIn} 0.6s ease-out;
 
   h2 {
-    color: #2B2230;
+    color: ${({ theme }) => theme.textPrimary};
     margin-bottom: 1rem;
     font-size: 1.6rem;
     font-weight: 700;
   }
 
   p {
-    color: #8A7684;
+    color: ${({ theme }) => theme.textSecondary};
     margin-bottom: 2rem;
   }
 
@@ -198,10 +232,10 @@ const BranchGrid = styled.div`
 
 const BranchButton = styled.button`
   padding: 1.5rem 1rem;
-  background: #FFFDFE;
+  background: ${({ theme }) => theme.bgInput};
   border: 1.5px solid rgba(43, 179, 163, 0.25);
   border-radius: 16px;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
@@ -214,7 +248,7 @@ const BranchButton = styled.button`
 
   &:hover {
     background: rgba(43, 179, 163, 0.08);
-    border-color: #1E8A7D;
+    border-color: ${({ theme }) => theme.brandTertiary};
     transform: translateY(-4px);
   }
 
@@ -237,8 +271,8 @@ const ConfirmOverlay = styled.div`
 `
 
 const ConfirmCard = styled.div`
-  background: #FFFFFF;
-  border: 1px solid #EBDDE5;
+  background: ${({ theme }) => theme.bgCard};
+  border: 1px solid ${({ theme }) => theme.borderLight};
   border-radius: 24px;
   padding: 2.25rem;
   width: 100%;
@@ -252,11 +286,11 @@ const ConfirmTitle = styled.h3`
   font-size: 1.3rem;
   font-weight: 800;
   margin: 0 0 0.75rem;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
 `
 
 const ConfirmText = styled.p`
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0 0 1.75rem;
@@ -271,9 +305,9 @@ const ConfirmCancelBtn = styled.button`
   flex: 1;
   padding: 0.8rem 1rem;
   border-radius: 10px;
-  border: 1px solid #EBDDE5;
-  background: #F6EFF3;
-  color: #5C4B57;
+  border: 1px solid ${({ theme }) => theme.borderLight};
+  background: ${({ theme }) => theme.bgSubtle};
+  color: ${({ theme }) => theme.textSecondary};
   font-weight: 600;
   font-size: 0.95rem;
   font-family: inherit;
@@ -281,7 +315,7 @@ const ConfirmCancelBtn = styled.button`
   transition: background 0.2s ease;
 
   &:hover {
-    background: #EEDFE7;
+    background: ${({ theme }) => theme.bgSubtleHover};
   }
 `
 
@@ -290,8 +324,8 @@ const ConfirmLogoutBtn = styled.button`
   padding: 0.8rem 1rem;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #D9538F, #A83A6E);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, ${({ theme }) => theme.brandMain}, ${({ theme }) => theme.brandSecondary});
+  color: #fff;
   font-weight: 700;
   font-size: 0.95rem;
   font-family: inherit;
@@ -311,8 +345,8 @@ const ModulesWrapper = styled.div`
 `
 
 const ModuleCard = styled.div`
-  background: #FFFFFF;
-  border: 1px solid rgba(201, 79, 135, 0.14);
+  background: ${({ theme }) => theme.bgCard};
+  border: 1px solid ${({ theme }) => theme.borderActive};
   border-radius: 20px;
   padding: 28px;
   display: flex;
@@ -340,7 +374,7 @@ const ModuleIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.$ink};
+  color: ${({ $ink, theme }) => $ink === 'teal' ? theme.brandTertiary : theme.brandSecondary};
   font-weight: 800;
   font-size: 14px;
   letter-spacing: 0.02em;
@@ -355,14 +389,14 @@ const ModuleTextGroup = styled.div`
 const ModuleName = styled.h3`
   font-weight: 700;
   font-size: 18px;
-  color: #2B2230;
+  color: ${({ theme }) => theme.textPrimary};
   margin: 0;
 `
 
 const ModuleDescription = styled.p`
   font-size: 13.5px;
   line-height: 1.65;
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   margin: 0;
 `
 
@@ -377,13 +411,13 @@ const LaunchButton = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #A83A6E;
+  color: ${({ theme }) => theme.brandSecondary};
   font-weight: 700;
   font-size: 14px;
   transition: color 0.2s ease;
 
   ${ModuleCard}:hover & {
-    color: #D9538F;
+    color: ${({ theme }) => theme.brandMain};
   }
 `
 
@@ -401,7 +435,7 @@ const Badge = styled.span`
   padding: 4px 12px;
   font-size: 11.5px;
   font-weight: 600;
-  color: #1E8A7D;
+  color: ${({ theme }) => theme.brandTertiary};
 `
 
 // Loading
@@ -421,8 +455,8 @@ const LoadingCircles = styled.div`
 const LoadingCircle = styled.div`
   width: 12px;
   height: 12px;
-  background-color: ${({ $index }) => {
-    const colors = ["#D9538F", "#1E8A7D", "#A83A6E", "#2BB3A3"]
+  background-color: ${({ $index, theme }) => {
+    const colors = [theme.brandMain, theme.brandTertiary, theme.brandSecondary, theme.brandTertiary]
     return colors[$index % colors.length]
   }};
   border-radius: 50%;
@@ -432,7 +466,7 @@ const LoadingCircle = styled.div`
 `
 
 const LoadingText = styled.p`
-  color: #8A7684;
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 1rem;
   font-weight: 500;
 `
@@ -449,8 +483,8 @@ const LaunchArrowIcon = () => (
 
 // Module glyph tint/edge/ink pairs, alternating pink/teal
 const glyphStyles = [
-  { tint: 'rgba(217,83,143,0.16)', edge: 'rgba(217,83,143,0.4)', ink: '#A83A6E' },
-  { tint: 'rgba(43,179,163,0.14)', edge: 'rgba(43,179,163,0.4)', ink: '#1E8A7D' },
+  { tint: 'rgba(217,83,143,0.16)', edge: 'rgba(217,83,143,0.4)', ink: 'pink' },
+  { tint: 'rgba(43,179,163,0.14)', edge: 'rgba(43,179,163,0.4)', ink: 'teal' },
 ]
 
 // Generate a short glyph from a module name
@@ -696,23 +730,25 @@ const Modules = () => {
             <WelcomeTitle>
               Welcome{userName ? <>, <UserNameHighlight>{userName}</UserNameHighlight></> : " to Shanmuga Innovations"}
             </WelcomeTitle>
-            <BrandSubtitle>SHANMUGA INNOVATIONS</BrandSubtitle>
             {selectedBranch && (
               <BranchRow>
                 <span>Active Branch: <strong>{selectedBranch}</strong></span>
-                <ChangeBranchLink
-                  onClick={() => {
-                    localStorage.removeItem("selected_branch");
-                    setSelectedBranch(null);
-                  }}
-                >
-                  Change Branch
-                </ChangeBranchLink>
+                {branchCodes.length > 1 && (
+                  <ChangeBranchLink
+                    onClick={() => {
+                      localStorage.removeItem("selected_branch");
+                      setSelectedBranch(null);
+                    }}
+                  >
+                    Change Branch
+                  </ChangeBranchLink>
+                )}
               </BranchRow>
             )}
           </BrandColumn>
 
           <HeaderActions>
+            <ThemeToggle />
             <LogoutBtn onClick={() => setShowLogoutConfirm(true)}>
               <LogoutIcon />
               Logout
@@ -722,76 +758,62 @@ const Modules = () => {
 
         <Divider />
 
-        {error && <ErrorBanner>{error}</ErrorBanner>}
+        <ScrollableArea>
+          {error && <ErrorBanner>{error}</ErrorBanner>}
 
-        {/* Branch Selection View */}
-        {!selectedBranch && branchCodes.length > 1 && (
-          <BranchSelectionContainer>
-            <h2>Select Your Branch</h2>
-            <p>Please select a branch to view available modules.</p>
+          {/* Branch Selection View */}
+          {!selectedBranch && branchCodes.length > 1 && (
+            <BranchSelectionContainer>
+              <h2>Select Your Branch</h2>
+              <p>Please select a branch to view available modules.</p>
 
-            <BranchGrid>
-              {entitlements.map(({ DataEntitlementsCode, DataEntitlements }) => (
-                <BranchButton
-                  key={DataEntitlementsCode}
-                  onClick={() => {
-                    localStorage.setItem("selected_branch", DataEntitlementsCode);
-                    setSelectedBranch(DataEntitlementsCode);
-                  }}
-                >
-                  <span className="icon">🏥</span>
-                  {DataEntitlements || DataEntitlementsCode}
-                </BranchButton>
-              ))}
-            </BranchGrid>
-          </BranchSelectionContainer>
-        )}
+              <BranchGrid>
+                {entitlements.map(({ DataEntitlementsCode, DataEntitlements }) => (
+                  <BranchButton
+                    key={DataEntitlementsCode}
+                    onClick={() => {
+                      localStorage.setItem("selected_branch", DataEntitlementsCode);
+                      setSelectedBranch(DataEntitlementsCode);
+                    }}
+                  >
+                    <span className="icon">🏥</span>
+                    {DataEntitlements || DataEntitlementsCode}
+                  </BranchButton>
+                ))}
+              </BranchGrid>
+            </BranchSelectionContainer>
+          )}
 
-        {/* Modules View */}
-        {(selectedBranch || branchCodes.length === 1) && (
-          <ModulesWrapper>
-            <ModuleCard $index={0} onClick={handleProfileClick}>
-              <ModuleIcon $tint="rgba(217,83,143,0.16)" $edge="rgba(217,83,143,0.4)" $ink="#A83A6E">
-                {glyphFor("Profile")}
-              </ModuleIcon>
-              <ModuleTextGroup>
-                <ModuleName>My Profile</ModuleName>
-                <ModuleDescription>View and manage your personal profile details</ModuleDescription>
-              </ModuleTextGroup>
-              <ActionSection>
-                <LaunchButton>
-                  Launch <Arrow><LaunchArrowIcon /></Arrow>
-                </LaunchButton>
-                <Badge>Default</Badge>
-              </ActionSection>
-            </ModuleCard>
-
-            {modules.map((module, index) => {
-              const style = glyphStyles[index % glyphStyles.length]
-              return (
-                <ModuleCard
-                  key={module.module_code}
-                  $index={index + 1}
-                  onClick={() => handleModuleClick(module.module_link)}
-                >
-                  <ModuleIcon $tint={style.tint} $edge={style.edge} $ink={style.ink}>
-                    {glyphFor(module.module_name)}
-                  </ModuleIcon>
-                  <ModuleTextGroup>
-                    <ModuleName>{module.module_name}</ModuleName>
-                    <ModuleDescription>{module.description || getDescription(module.module_name)}</ModuleDescription>
-                  </ModuleTextGroup>
-                  <ActionSection>
-                    <LaunchButton>
-                      Launch <Arrow><LaunchArrowIcon /></Arrow>
-                    </LaunchButton>
-                    <Badge>v{module.version || "1.0"}</Badge>
-                  </ActionSection>
-                </ModuleCard>
-              )
-            })}
-          </ModulesWrapper>
-        )}
+          {/* Modules View */}
+          {(selectedBranch || branchCodes.length === 1) && (
+            <ModulesWrapper>
+              {modules.map((module, index) => {
+                const style = glyphStyles[index % glyphStyles.length]
+                return (
+                  <ModuleCard
+                    key={module.module_code}
+                    $index={index + 1}
+                    onClick={() => handleModuleClick(module.module_link)}
+                  >
+                    <ModuleIcon $tint={style.tint} $edge={style.edge} $ink={style.ink}>
+                      {glyphFor(module.module_name)}
+                    </ModuleIcon>
+                    <ModuleTextGroup>
+                      <ModuleName>{module.module_name}</ModuleName>
+                      <ModuleDescription>{module.description || getDescription(module.module_name)}</ModuleDescription>
+                    </ModuleTextGroup>
+                    <ActionSection>
+                      <LaunchButton>
+                        Launch <Arrow><LaunchArrowIcon /></Arrow>
+                      </LaunchButton>
+                      <Badge>v{module.version || "1.0"}</Badge>
+                    </ActionSection>
+                  </ModuleCard>
+                )
+              })}
+            </ModulesWrapper>
+          )}
+        </ScrollableArea>
 
         {showBirthdayModal && (
           <BirthdayModal
